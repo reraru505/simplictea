@@ -1,0 +1,88 @@
+
+
+#![allow(non_camel_case_types)]
+#![allow(unused_variables)]
+
+#[derive(Debug)]
+pub struct Position{
+
+    pub x : usize ,
+    pub y : usize ,
+}
+
+
+#[derive(Debug)]
+pub enum Data_Type{
+    CHAR(String) ,
+    VOID(String) ,
+    I32(String)  ,
+    I64(String)  ,
+    F32(String)  ,
+    F64(String)  ,
+    STRING(String) ,
+}
+
+#[derive(Debug)]
+pub enum Statement{
+    function_marker(String),
+    if_statement(String),
+    else_statement(String),
+    return_statement(String),
+    for_statement(String),
+} 
+
+#[derive(Debug)]
+pub enum Keyword{
+
+    data_type(Data_Type),
+    statement(Statement),
+}
+
+
+#[derive(Debug)]
+pub enum Literal{
+    character_literal(String) ,
+    string_literal(String) ,
+    integer_literal(String),
+    decimal_literal(String),
+}
+
+#[derive(Debug)]
+pub enum STC {
+    stc_scope_begin(String),    // {
+    stc_scope_end(String),      // }
+
+    stc_comma_seperator(String),
+    stc_end_expression(String), // ;
+
+    stc_arg_begin(String), // (
+    stc_arg_end(String),   // )
+}
+
+#[derive(Debug)]
+pub enum Operator{
+
+    assignment_op(String),
+    type_assignment_op(String),
+    
+    addition_op(String),
+    subtraction_op(String),
+    multiplication_op(String),
+    division_op(String),
+    
+}
+
+
+#[derive(Debug)]
+pub enum Token{
+
+    t_keyword(Keyword),
+    t_literal(Literal),
+    t_stc(STC),
+    t_operator(Operator),
+    t_identifier(String),
+
+}
+
+
+
