@@ -6,7 +6,7 @@ use std::fmt;
 use crate::lexer::token_type::*;
 use crate::binaryexp_helpers::*;
 
-pub fn break_binary_expression(context : &mut Vec<Token> , scope : &str  ) -> BinaryExpressionTree{
+pub fn break_binary_expression(context : &mut Vec<Token> , scope : &str , tmp_count : &mut usize  ) -> BinaryExpressionTree{
 
     let mut new_context = remove_brackets_from_single_token_inside_brackets(Rc::new(RefCell::new(context.clone())));
     
@@ -19,7 +19,7 @@ pub fn break_binary_expression(context : &mut Vec<Token> , scope : &str  ) -> Bi
     
 
     
-    handle_binary_expression(&mut new_context ,&mut tree_maker , scope );
+    handle_binary_expression(&mut new_context ,&mut tree_maker , scope , tmp_count );
 
  //   for i in tree_maker.iter(){
  //	println!("{:?}" , i);
@@ -35,7 +35,8 @@ pub fn break_binary_expression(context : &mut Vec<Token> , scope : &str  ) -> Bi
 
 pub fn handle_binary_expression(context : &mut Vec<Token> ,
 				tree_maker : &mut Vec<Option<Token>> ,
-				scope : &str ){
+				scope : &str ,
+				tmp_count : &mut usize){
 
     let mut newcon = context.clone();
     let mut conholder  : Vec<Vec<Token>> = Vec::new();
@@ -43,7 +44,7 @@ pub fn handle_binary_expression(context : &mut Vec<Token> ,
     let mut precedence = BinaryExpressionType::get_highest_precedence(newcon.clone());
     let mut index = 0;
     let mut len = context.len();
-    let mut tmp_counter = 0;
+    let mut tmp_counter = *tmp_count;
     
     while precedence > 1{
 
@@ -136,6 +137,6 @@ pub fn handle_binary_expression(context : &mut Vec<Token> ,
 	tree_maker.push(None);
     }
     
-	
+    *tmp_count = tmp_counter;
     
 }

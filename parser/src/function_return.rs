@@ -4,10 +4,10 @@ use crate::parsingdata::ParsingData;
 use crate::lexer::token_type::{Keyword , Statement , Token , STC};
 use crate::binaryexp_handle::break_binary_expression;
 
-pub fn find_returns_inside_scope(parsingvec : Vec<ParsingData> , scope : String) ->Vec<ParsingData>{
+pub fn find_returns_inside_scope(parsingvec : Vec<ParsingData> , scope : String , tmp_count : &mut usize) ->Vec<ParsingData>{
 
     let mut retval : Vec<ParsingData> = Vec::new();
-
+    
     let mut i = 0;
     while i < parsingvec.len(){
 
@@ -31,8 +31,8 @@ pub fn find_returns_inside_scope(parsingvec : Vec<ParsingData> , scope : String)
 
 		i += 1;
 		
-		retval.push(ParsingData::function_return(break_binary_expression(&mut binexp , &scope)));
-		
+		retval.push(ParsingData::function_return(break_binary_expression(&mut binexp , &scope , tmp_count)));
+		*tmp_count += 1;
 		
 		
 	    }else{

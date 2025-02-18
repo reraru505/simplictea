@@ -1,0 +1,22 @@
+
+foo : i32 fn (hello : i32) {
+
+    return 0;
+}
+
+add : i32 fn ( a : i32 , b : i32 ,  c : i32 , d : char ){
+    return a + b;
+}
+
+main : i32 fn {
+
+     a : i32 = 44;
+
+     b : i32 = a + 6 + 6 * (35 + 66) / 6 + 6 * (7 + (7 + (6 + 7)));
+
+     d : i32 = 5 + 6;
+     c : i32 = a + b;
+
+     return 0;
+}
+

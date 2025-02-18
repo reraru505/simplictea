@@ -104,11 +104,12 @@ pub fn get_variable_data_type(token : Token) -> DataType{
 }
 
 
-pub fn find_variable_declarations_in_scope(parsingvec : Vec<ParsingData> , scope : String ) -> Vec<ParsingData>{
+pub fn find_variable_declarations_in_scope(parsingvec : Vec<ParsingData> , scope : String , tmp_count : &mut usize ) -> Vec<ParsingData>{
 
     let len = parsingvec.len();
     let mut context : Vec<ParsingData> = Vec::new();
     let mut retval : Vec<ParsingData> = Vec::new();
+    
 
     let mut i  = 0;
     while i < len {
@@ -186,7 +187,10 @@ pub fn find_variable_declarations_in_scope(parsingvec : Vec<ParsingData> , scope
 		retval.push(ParsingData::variable(Variable::new(name ,
 								vtype ,
 								Qualifier::VARIABLE ,
-								Some(break_binary_expression(&mut binexp , &scope)))));
+								Some(break_binary_expression(&mut binexp ,
+											     &scope ,
+											     tmp_count)))));
+		*tmp_count += 1;
 		context.clear();
 		
 		//i += 1;

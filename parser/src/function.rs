@@ -248,7 +248,7 @@ pub fn hanble_function_args(parsingvec : Vec<ParsingData>) -> Vec<ParsingData>{
 }
 
 
-pub fn handle_variable_defs_in_functions(parsingvec : Vec<ParsingData>) -> Vec<ParsingData>{
+pub fn handle_variable_defs_in_functions(parsingvec : Vec<ParsingData> ) -> Vec<ParsingData>{
 
     let mut retval : Vec<ParsingData> = Vec::new();
     
@@ -257,8 +257,14 @@ pub fn handle_variable_defs_in_functions(parsingvec : Vec<ParsingData>) -> Vec<P
 	if matches!(i , ParsingData::functiondef(_)){
 	    if let ParsingData::functiondef(mut fdef) = i.clone() {
 		if let Some(mut block ) = fdef.fn_body{
+		    let mut tmp_count = 0;
 		    
-		    block.block = find_variable_declarations_in_scope(block.block.clone() , block.scope.clone());
+		    block.block = find_variable_declarations_in_scope(block.block.clone() , block.scope.clone() , &mut tmp_count);
+		    
+		    tmp_count += 1;
+		    
+		    block.block = find_returns_inside_scope(block.block.clone() , block.scope.clone() , &mut tmp_count);
+		    
 		    //println!("{:#?}", block);
 		    fdef.fn_body = Some(block.clone());
 		}
@@ -275,31 +281,31 @@ pub fn handle_variable_defs_in_functions(parsingvec : Vec<ParsingData>) -> Vec<P
 }
 
 
-pub fn handle_return_statements_in_functions(parsingvec : Vec<ParsingData>) -> Vec<ParsingData>{
-
-    let mut retval : Vec<ParsingData> = Vec::new();
-    
-    for i in parsingvec.iter(){
-
-	if matches!(i , ParsingData::functiondef(_)){
-	    if let ParsingData::functiondef(mut fdef) = i.clone() {
-		if let Some(mut block ) = fdef.fn_body{
-		    
-		    block.block = find_returns_inside_scope(block.block.clone() , block.scope.clone());
-		    //println!("{:#?}", block);
-		    fdef.fn_body = Some(block.clone());
-		}
-
-		retval.push(ParsingData::functiondef(fdef));
-	    }
-	}else{
-	    retval.push(i.clone());
-	}
-	
-    }
-    return retval;
-    
-}
+//pub fn handle_return_statements_in_functions(parsingvec : Vec<ParsingData>) -> Vec<ParsingData>{
+//
+//    let mut retval : Vec<ParsingData> = Vec::new();
+//    
+//    for i in parsingvec.iter(){
+//
+//	if matches!(i , ParsingData::functiondef(_)){
+//	    if let ParsingData::functiondef(mut fdef) = i.clone() {
+//		if let Some(mut block ) = fdef.fn_body{
+//		    
+//		    block.block = find_returns_inside_scope(block.block.clone() , block.scope.clone());
+//		    //println!("{:#?}", block);
+//		    fdef.fn_body = Some(block.clone());
+//		}
+//
+//		retval.push(ParsingData::functiondef(fdef));
+//	    }
+//	}else{
+//	    retval.push(i.clone());
+//	}
+//	
+//    }
+//    return retval;
+//    
+//}
 
 
 pub fn get_function_return_type(in_context : Vec<ParsingData>) -> DataType{
