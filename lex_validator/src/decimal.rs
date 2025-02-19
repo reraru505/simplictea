@@ -35,23 +35,20 @@ pub fn merge_decimal(lexemevec : Vec<Lexeme> , line_vec : Vec<String>) -> Vec<Le
 		    i -= 1;
 		    let next_position = lexemevec[i + 1].clone().position;
 
-		    for i in buffer.iter() {
-			println!("{}", i);
-		    }
-		    println!("{}", buffer.clone().join(""));
-
-		    
 		    check_decimal_validity(buffer.clone().join("") , last_position.clone() , next_position , line_vec.clone());
 		    retval.push(Lexeme{tokens : Token::t_literal(Literal::decimal_literal(buffer.join(""))) ,
 				       position : last_position});
+		    buffer.clear();
 		}else {
 		    retval.push(lexemevec[i].clone());
+		    buffer.clear();
 		}
 	    }
 
 	    
 	}else {
 	    retval.push(lexemevec[i].clone());
+	    buffer.clear();
 	}
 
 	i += 1;
