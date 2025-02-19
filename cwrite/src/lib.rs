@@ -15,7 +15,7 @@ pub fn cwrite(parsingvec : Vec<ParsingData >){
 	      typedef int32_t i32;\n\
 	      typedef int64_t i64;\n\
 	      typedef float f32;\n\
-	      typedef doube f64;\n");
+	      typedef double f64;\n");
     
     for i in parsingvec.iter(){
 

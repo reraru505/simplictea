@@ -155,6 +155,7 @@ impl PartialEq for STC{
 	    (STC::stc_end_expression(a),STC::stc_end_expression(b)) => return true,
 	    (STC::stc_arg_begin(a),STC::stc_arg_begin(b)) => return true,
 	    (STC::stc_arg_end(a),STC::stc_arg_end(b)) => return true,
+	     (STC::stc_dot(a),STC::stc_dot(b)) => return true,
 	    _ => return false,
 	}
     }
@@ -171,6 +172,8 @@ impl Clone for STC{
 	    STC::stc_end_expression(a) => STC::stc_end_expression(a.clone()),
 	    STC::stc_arg_begin(a)      => STC::stc_arg_begin(a.clone())     ,
 	    STC::stc_arg_end(a)        => STC::stc_arg_end(a.clone())       ,
+	    STC::stc_dot(a)        => STC::stc_dot(a.clone())       ,
+
 	}
     }
 }

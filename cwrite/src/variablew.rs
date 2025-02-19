@@ -27,6 +27,9 @@ pub fn write_variable(var : Variable ) -> String {
 	    if let Literal::integer_literal(l) = last_tmp{
 		retval.push(format!("\t{} {} = {};\n\n" ,write_data_type(var.clone().var_type) , var.var_id , l));
 	    }
+	    else if let Literal::decimal_literal(l) = last_tmp{
+		retval.push(format!("\t{} {} = {};\n\n" ,write_data_type(var.clone().var_type) , var.var_id , l));
+	    }
 	}
     }
 

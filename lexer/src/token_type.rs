@@ -57,6 +57,8 @@ pub enum STC {
 
     stc_arg_begin(String), // (
     stc_arg_end(String),   // )
+
+    stc_dot(String),
 }
 
 #[derive(Debug)]

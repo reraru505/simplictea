@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 lexer = {path = "./lexer"}
+lex_validator = {path = "./lex_validator"}
 parser = {path = "./parser"}
 symboltable = {path = "./symboltable"}
 cwrite = {path = "./cwrite"}

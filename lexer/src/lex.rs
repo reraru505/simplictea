@@ -82,10 +82,11 @@ impl Lexer {
 			break;
 		    }
 		}
+		bol = 0;
 		line += 1;
-	    }
+		index += 1;
 
-	    if tokenizer.is_space(contents_vec[index]) {
+	    }else if tokenizer.is_space(contents_vec[index]) {
 
 		context_len = context.borrow().len();
 
@@ -111,8 +112,9 @@ impl Lexer {
 
 		}
 
-		if contents_vec[index] == '\n' { line += 1 ;} else { bol += 1};
+		if contents_vec[index] == '\n' { bol = 0; line += 1 ;} else { bol += 1};
 		index += 1;
+
 		
 	    }else{
 		if  contents_vec[index] == '"' {
@@ -134,7 +136,7 @@ impl Lexer {
 		    bol += 1;
 		    index += 1;
 
-		    
+		    println!("3 Line was set to {}", line);
 		}else if contents_vec[index] == '\'' {
 		    
 		    context.borrow_mut().push(contents_vec[index]);
@@ -189,7 +191,7 @@ impl Lexer {
 		    bol += 1;
 		    index += 1;
 		    
-		
+
 		}else if tokenizer.is_stc(contents_vec[index]){
 		    
 		    let context_len = context.borrow().len();
@@ -219,7 +221,7 @@ impl Lexer {
 		    context.borrow_mut().push(contents_vec[index]);
 		    bol += 1;
 		    index += 1;
-		    
+
 		    
 		}else {
 
@@ -240,7 +242,7 @@ impl Lexer {
 		    context.borrow_mut().push(contents_vec[index]);
 		    bol += 1;
 		    index += 1;
-		
+		    
 		}
 		
 	    }

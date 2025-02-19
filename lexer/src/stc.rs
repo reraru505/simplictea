@@ -18,6 +18,7 @@ impl STC_Checker{
 	    s if *s == ";" => return Some(Token::t_stc(STC::stc_end_expression(s.clone()))) ,
 	    s if *s == "(" => return Some(Token::t_stc(STC::stc_arg_begin(s.clone()))) ,
 	    s if *s == ")" => return Some(Token::t_stc(STC::stc_arg_end(s.clone()))) ,
+	    s if *s == "." => return Some(Token::t_stc(STC::stc_dot(s.clone()))),
 	    _ => return None,
 	}
     }
