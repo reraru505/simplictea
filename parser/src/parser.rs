@@ -3,70 +3,93 @@ use crate::lexer::lex::Lexeme;
 use crate::lexer::token_type::*;
 use crate::parsingdata::*;
 use crate::function::*;
+use crate::global::create_global_scope;
+use crate::iterator::find_iterator_in_scope;
+use crate::variable::find_variable_declarations_in_scope;
+use crate::function_return::find_returns_inside_scope;
 
-//struct Parser;
-//
-//impl Parser {
-//    
-//    pub fn parse(in_lexemes : Vec<Lexeme>) -> Vec<Expression> {
-//
-//	let mut parsingvec = ParsingData::generate(in_lexemes.clone());
-//	let mut context : Vec<ParsingData> = Vec::new();
-//
-//	let mut parsing = true;
-//
-//	while parsing {
-//
-//	    for (index , i) in parsingvec.iter().enumerate(){
-//
-//		if is_function_def(context.clone()){
-//		    
-//		}
-//		
-//		//if let ParsingData::lexeme(_) = i {
-//		context.push(i.clone());
-//		//}
-//	    }
-//	    
-//	}
-//		
-//	
-//    }
-//}
-//
-//fn is_binary_expression(in_context : & Vec<Lexeme>) -> bool {
-//
-//    let mut context = in_context.clone();
-//    if matches!(context.pop().unwrap().tokens ,
-//		Token::t_stc(STC::stc_end_expression(_)) |
-//		Token::t_stc(STC::stc_comma_seperator(_))) == false{
-//
-//	return false;
-//	
-//    } 
-//    for i in context.iter(){
-//	
-//	if matches!(i.tokens , Token::t_identifier(_) | Token::t_literal(_)| Token::t_operator(_)) == false{
-//	    return false;
-//	}
-//    }
-//
-//    return true;
-//}
-//
-//
-//fn is_fn_definition(in_context : & Vec<Lexeme>) -> bool {
-//
-//    let mut retval = false;
-//
-//    if in_context.len() < 4 {
-//	return false;
-//    }
-//
-//    
-//    if matches!(in_context[0].tokens.clone() , Token::t_identifier(_)) &&
-//	matches!(in_context[1].tokens.clone() , Token::t_operator(Operator::type_assignment_op(_))) 
-//    
-//    
-//    return retval;
-//}
+pub fn parser(parsingvec : Vec<ParsingData> ) -> Vec<ParsingData> {
+
+    let mut program = create_global_scope(parsingvec);
+
+    
+    program.block = find_iterator_in_scope(program.block , program.scope.clone() );
+    program.block = find_functions_in_scope(program.block , program.scope.clone() );
+    let mut tmp_count = 0;
+    program.block = find_variable_declarations_in_scope(program.block , program.scope.clone() ,&mut tmp_count );
+
+    
+    	
+//    parse_recurse(&mut program);
+
+    return program.block;
+}
+
+fn parse_recurse(block : &mut Block ){
+
+    if has_scope(block.clone().block){
+
+	for i in 0 .. block.block.len(){
+	    
+	    if matches!(block.block[i] , ParsingData::functiondef(_)){
+		
+		if let ParsingData::functiondef(mut fdef ) = block.block[i].clone(){
+		    
+		    if let Some(mut body) = fdef.fn_body{
+		    
+			body.block = find_iterator_in_scope(body.block , body.scope.clone() );
+			body.block = find_functions_in_scope(body.block , body.scope.clone() );
+			let mut tmp_count = 0;
+			body.block = find_variable_declarations_in_scope(body.block , body.scope.clone() ,&mut tmp_count );
+			body.block = find_returns_inside_scope(body.block , body.scope.clone() ,&mut tmp_count );
+			
+			
+			parse_recurse(&mut body);
+			
+			fdef.fn_body = Some(body);
+		    }
+		    block.block[i] =  ParsingData::functiondef(fdef);
+		    
+		}
+	    }else if matches!(block.block[i] , ParsingData::iterator(_)){
+
+		
+		if let ParsingData::iterator(mut iterator ) = block.block[i].clone(){
+		    
+		    if let Some(mut body) = iterator.iter_body{
+		    
+			body.block = find_iterator_in_scope(body.block , body.scope.clone() );
+			body.block = find_functions_in_scope(body.block , body.scope.clone() );
+			let mut tmp_count = 0;
+			body.block = find_variable_declarations_in_scope(body.block , body.scope.clone() ,&mut tmp_count );
+			body.block = find_returns_inside_scope(body.block , body.scope.clone() ,&mut tmp_count );
+			
+			
+			parse_recurse(&mut body);
+			
+			iterator.iter_body = Some(body);
+		    }
+		    block.block[i] =  ParsingData::iterator(iterator);
+		    
+		}
+		
+	    }
+	}
+    }else {
+	
+	return;
+    }
+}
+
+
+
+pub fn has_scope(parsingvec : Vec<ParsingData>) -> bool {
+
+    for i in parsingvec.iter(){
+	if matches!(i , ParsingData::functiondef(_) | ParsingData::iterator(_)){
+	    return true;
+	}
+    }
+
+    return false;
+}

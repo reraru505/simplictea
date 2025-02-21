@@ -7,10 +7,10 @@ foo : i32 fn (hello : i32) {
 add : i32 fn ( a : i32 , b : i32 ,  c : i32 , d : char ){
     return a + b;
 }
-
+	
 main : i32 fn {
 
-     a : i32 = 44.0;
+     a : i32 = 44.055;
 
      b : i32 = a + 6 + 6 * (35 + 66) / 6 + 6 * (7 + (7 + (6 + 7)));
 
@@ -23,6 +23,13 @@ main : i32 fn {
 
 main : i32 fn {
 
-     a : f32 = 440.875;
+     a : f32 = 440.5;
+}
+
+
+for i in 0 to 5 {
+
+    a : i32 = 4;
+
 }
 

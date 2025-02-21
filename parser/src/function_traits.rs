@@ -17,6 +17,7 @@ impl Clone for FunctionDef{
     fn clone(&self ) -> Self {
 
 	Self {
+	    super_scope : self.super_scope.clone(),
 	    fn_id : self.fn_id.clone(),
 	    fn_type : self.fn_type.clone(),
 	    fn_return_type : self.fn_return_type.clone(),

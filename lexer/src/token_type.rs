@@ -25,10 +25,15 @@ pub enum Data_Type{
 #[derive(Debug)]
 pub enum Statement{
     function_marker(String),
+    
     if_statement(String),
     else_statement(String),
+    
     return_statement(String),
+    
     for_statement(String),
+    in_statement(String),
+    to_statement(String),
 } 
 
 #[derive(Debug)]

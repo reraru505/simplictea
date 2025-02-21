@@ -9,16 +9,17 @@ use crate::parser::parse;
 use crate::cwrite::cwrite;
 use crate::lex_validator::validate;
 
+
 fn main() {
 
     let lexemes : Vec<Lexeme> = lexer::lexer("./Examples/example1.spt".to_string());
-    let lexemes = validate("./Examples/example1.spt".to_string() , lexemes);
+    //let lexemes = validate("./Examples/example1.spt".to_string() , lexemes);
     
     for i in lexemes.iter(){
-	println!("{:#?}", i);
+ 	println!("{:#?}", i);
     }
     let parsing_data = parse(lexemes);
-    cwrite(parsing_data);
+  //  cwrite(parsing_data);
     
     
     

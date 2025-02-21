@@ -56,6 +56,8 @@ pub fn find_statement(input_string : Rc<RefCell<String>>) -> Option<Statement> {
 	    s if *s == "else".to_string()    => return Some(Statement::else_statement("else".to_string())),
 	    s if *s == "return".to_string()    => return Some(Statement::return_statement("return".to_string())),
 	    s if *s == "for".to_string()    => return Some(Statement::for_statement("for".to_string())),
+	    s if *s == "in".to_string()    => return Some(Statement::in_statement("in".to_string())),
+	    s if *s == "to".to_string()    => return Some(Statement::to_statement("to".to_string())),
 	    _ => return None,
 	    
 	}

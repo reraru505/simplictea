@@ -5,6 +5,7 @@ use crate::function::FunctionDef;
 use crate::lexer::lex::Lexeme;
 use crate::binaryexp::{BinaryExpressionBlock , BinaryExpressionTree};
 use crate::variable::Variable;
+use crate::iterator::Iterator;
 
 struct Parser;
 
@@ -16,6 +17,7 @@ pub enum ParsingData{
     temp_arg_indicator(Vec<Lexeme>),
     variable(Variable),
     function_return(BinaryExpressionTree),
+    iterator(Iterator),
 }
 
 
@@ -58,6 +60,7 @@ impl Clone for ParsingData{
 	    ParsingData::temp_arg_indicator(s) => return ParsingData::temp_arg_indicator(s.clone()),
 	    ParsingData::variable(s) => return ParsingData::variable(s.clone()),
 	    ParsingData::function_return(s) => return ParsingData::function_return(s.clone()),
+	    ParsingData::iterator(s) => return ParsingData::iterator(s.clone()),
 	}
 	
     }

@@ -16,6 +16,7 @@ pub enum FunctionDefType{
 #[derive(Debug)]
 pub struct FunctionDef{
 
+    pub super_scope : String,
     pub fn_id : Token ,
     pub fn_type : Option<FunctionDefType>,
     pub fn_return_type : DataType,
@@ -24,8 +25,9 @@ pub struct FunctionDef{
 }
 
 impl FunctionDef{
-    pub fn new(fid : Token , frt : DataType ) -> Self{
+    pub fn new(fid : Token , frt : DataType , scope : String ) -> Self{
 	Self{
+	    super_scope : scope,
 	    fn_id : fid ,
 	    fn_type : None,
 	    fn_return_type : frt,
@@ -36,7 +38,19 @@ impl FunctionDef{
 }
 
 
-pub fn find_all_function_def(parsingvec : Vec<ParsingData>) -> Vec<ParsingData>{
+pub fn find_functions_in_scope(parsingvec : Vec<ParsingData> , scope : String )-> Vec<ParsingData>{
+
+    let mut retval = find_all_function_def(parsingvec  , scope  );
+    retval = find_all_function_args(retval );
+    retval = find_all_function_blocks(retval) ;
+    retval = hanble_function_args(retval);
+
+    return retval;
+    
+}
+
+
+pub fn find_all_function_def(parsingvec : Vec<ParsingData> , scope : String ) -> Vec<ParsingData>{
 
     let mut context : Vec<ParsingData> = Vec::new();
     let mut retval  : Vec<ParsingData> = Vec::new();
@@ -53,15 +67,15 @@ pub fn find_all_function_def(parsingvec : Vec<ParsingData>) -> Vec<ParsingData>{
 		retval.pop();
 	    }
 	    retval.push(ParsingData::functiondef(FunctionDef::new(get_function_id(context.clone()),
-								  get_function_return_type(context.clone()))));
+								  get_function_return_type(context.clone()) ,
+								  scope.clone())));
 	    context.clear();
 	}
 	retval.push(parsingvec[i].clone());
 	
-
 	
     }
-    
+
     return retval;
 }
 
@@ -97,6 +111,7 @@ pub fn find_all_function_args(parsingvec : Vec<ParsingData>) -> Vec<ParsingData>
 
 		    loop {
 			if let ParsingData::lexeme(l) = parsingvec[i].clone(){
+			    
 			    if matches!(l.tokens , Token::t_stc(STC::stc_arg_end(_))){
 				break;
 			    }else{
@@ -115,6 +130,11 @@ pub fn find_all_function_args(parsingvec : Vec<ParsingData>) -> Vec<ParsingData>
 	    }
 	  
 	}else {
+
+	    if matches!(parsingvec[i].clone(),ParsingData::iterator(_)){
+		println!("\nIterator found while finding args\n");
+	    }
+	    
 	    retval.push(parsingvec[i].clone());
 	    i += 1;
 	}
@@ -147,7 +167,7 @@ pub fn find_all_function_blocks(parsingvec : Vec<ParsingData>) -> Vec<ParsingDat
 			
 			loop {
 			    if let ParsingData::lexeme(l) = parsingvec[i].clone(){
-
+				
 				if matches!(l.tokens , Token::t_stc(STC::stc_scope_begin(_))){
 				    inner += 1;
 				}else if matches!(l.tokens , Token::t_stc(STC::stc_scope_end(_))){
@@ -215,6 +235,9 @@ pub fn find_all_function_blocks(parsingvec : Vec<ParsingData>) -> Vec<ParsingDat
 	    }
 	    i+= 1;
 	}else {
+	    if matches!(parsingvec[i].clone(),ParsingData::iterator(_)){
+		println!("\nIterator found while finding Blocks\n");
+	    }
 	    retval.push(parsingvec[i].clone());
 	    i+= 1;
 	}
@@ -238,8 +261,18 @@ pub fn hanble_function_args(parsingvec : Vec<ParsingData>) -> Vec<ParsingData>{
 		} 
 		
 	    }else{
+		if matches!(parsingvec[i].clone(),ParsingData::iterator(_)){
+		    println!("\nIterator found while handling args\n");
+		}
 		retval.push(parsingvec[i].clone());
 	    }
+	}else {
+	    
+	    if matches!(parsingvec[i].clone(),ParsingData::iterator(_)){
+		println!("\nIterator found while handling args\n");
+	    }
+	    
+	    retval.push(parsingvec[i].clone());
 	}
     }
 
@@ -333,6 +366,7 @@ pub fn get_function_id(in_context : Vec<ParsingData>) -> Token{
     }
     return Token::t_identifier("THIS_CASE_CAN_NOT_OCCUR".to_string());
 }
+
 
 pub fn is_function_def(in_context : Vec<ParsingData>) -> bool{
 

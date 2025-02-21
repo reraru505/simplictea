@@ -86,6 +86,8 @@ impl PartialEq for Statement{
 	    (Statement::else_statement(a) , Statement::else_statement(b) ) => return true,
 	    (Statement::return_statement(a) , Statement::return_statement(b) ) => return true,
 	    (Statement::for_statement(a) , Statement::for_statement(b) ) => return true,
+	    (Statement::in_statement(a) , Statement::in_statement(b) ) => return true,
+	    (Statement::to_statement(a) , Statement::to_statement(b) ) => return true,
 	    _ => return false,
 	    
 	}
@@ -106,6 +108,8 @@ impl Clone for Statement{
 	    Statement::else_statement(a)   => Statement::else_statement(a.clone())   ,
 	    Statement::return_statement(a) => Statement::return_statement(a.clone()) ,
 	    Statement::for_statement(a)    => Statement::for_statement(a.clone())    ,
+	    Statement::in_statement(a)    => Statement::in_statement(a.clone())    ,
+	    Statement::to_statement(a)    => Statement::to_statement(a.clone())    ,
 	}
 	
     }
