@@ -107,115 +107,127 @@ pub fn get_variable_data_type(token : Token) -> DataType{
 pub fn find_variable_declarations_in_scope(parsingvec : Vec<ParsingData> , scope : String , tmp_count : &mut usize ) -> Vec<ParsingData>{
 
     let len = parsingvec.len();
-    let mut context : Vec<ParsingData> = Vec::new();
+
     let mut retval : Vec<ParsingData> = Vec::new();
-    
+    let mut context : Vec<ParsingData> = Vec::new();
 
     let mut i  = 0;
     while i < len {
 
-	println!("i is {}", i);
-	if i < len - 2{
-	    context = parsingvec[i .. i + 3].to_vec();
-	}else {
-	    retval.push(parsingvec[i].clone());
-	}
 	 	
 
-	if context.len() >  2 {
+	if let ParsingData::lexeme(lex ) = parsingvec[i].clone() {
 
-	    let mut is_var_def = false;
-	    
-	    if let ParsingData::lexeme(l) = context[0].clone(){
-		if matches!(l.tokens , Token::t_identifier(_)){
-		    is_var_def = true;
-		    println!("\nONE\n");
-		}else{
-		    is_var_def = false;
-		}
-	    }
-	    if let ParsingData::lexeme(l) = context[1].clone(){
-		if matches!(l.tokens , Token::t_operator(Operator::type_assignment_op(_))){
-		    is_var_def = true;
-		    println!("\nTWO\n");
-		}else{
-		    is_var_def = false;
-		}
-	    }
-	    
-	    if let ParsingData::lexeme(l) = context[2].clone(){
-		 if matches!(l.tokens , Token::t_keyword(Keyword::data_type(_))){
-		     is_var_def = true;
-		     println!("\nTHREE\n");
-		 }else{
-		     is_var_def = false;
-		 }
-	    }
-	    
-	    if is_var_def == true {
+	    if i + 4 < len && matches!(lex.tokens , Token::t_identifier(_)){
+		context.push(parsingvec[i].clone());
 
-		let mut binexp : Vec<Token> = Vec::new();
-		i += 4;
+
 		
-		loop {
+		let mut is_var_def = false;
+		
+		
+		if let ParsingData::lexeme(l) = parsingvec[i + 1].clone(){
+		    if matches!(l.tokens , Token::t_operator(Operator::type_assignment_op(_))){
+			context.push(parsingvec[i + 1].clone());
+			is_var_def = true;
+			
+		    }else{
+			is_var_def = false;
+		    }
+		}
+		
+		if let ParsingData::lexeme(l) = parsingvec[i + 2].clone(){
+		    if matches!(l.tokens , Token::t_keyword(Keyword::data_type(_))){
+			context.push(parsingvec[i + 2].clone());
+			is_var_def = true;
+			
+		    }else{
+			is_var_def = false;
+		    }
+		}
+		
+		if let ParsingData::lexeme(l) = parsingvec[i + 3].clone(){
+		    if matches!(l.tokens , Token::t_operator(Operator::assignment_op(_))){
+			context.push(parsingvec[i + 3].clone());
+			is_var_def = true;
+			
+		    }else{
+			is_var_def = false;
+		    }
+		}
+		
+		if is_var_def == true {
+		    println!("\n\nVariable found\n\n");
+		    i += 4;
+		    
+		    let mut binexp : Vec<Token> = Vec::new();
 
-		    if let ParsingData::lexeme(l) = parsingvec[i].clone(){
-			if matches!(l.tokens , Token::t_stc(STC::stc_end_expression(_))){
-			    binexp.push(l.tokens.clone());
-			    break;
-			}else {
-			    binexp.push(l.tokens.clone());
+		    
+		    loop {
+
+			if let ParsingData::lexeme(l) = parsingvec[i].clone(){
+			    if matches!(l.tokens , Token::t_stc(STC::stc_end_expression(_))){
+				binexp.push(l.tokens.clone());
+				
+				break;
+			    }else {
+				binexp.push(l.tokens.clone());
+			    }
+			}
+			i += 1;
+		    }
+
+		    
+		
+		    let mut name = String::new();
+		    let mut vtype = DataType::VOID;
+		    
+		    if let ParsingData::lexeme(l) = context[0].clone(){
+			if let Token::t_identifier(n) = l.tokens{
+			    name = n;
 			}
 		    }
+		
+		    if let ParsingData::lexeme(l) = context[2].clone(){
+			vtype = get_variable_data_type(l.tokens);
+		    }
+		    
+		    retval.push(ParsingData::variable(Variable::new(name ,
+								    vtype ,
+								    Qualifier::VARIABLE ,
+								    Some(break_binary_expression(&mut binexp ,
+												 &scope ,
+												 tmp_count)))));
+
+		    										 
+		    *tmp_count += 1;
+		    context.clear();
+		    
+		    i += 1;
+		}else {
+		
+		    retval.push(parsingvec[i].clone());
 		    i += 1;
 		}
-		println!("\n i was set to {} ", i);
-		
-		let mut name = String::new();
-		let mut vtype = DataType::VOID;
-
-		if let ParsingData::lexeme(l) = context[0].clone(){
-		    if let Token::t_identifier(n) = l.tokens{
-			name = n;
-		    }
-		}
-		
-		if let ParsingData::lexeme(l) = context[2].clone(){
-		    vtype = get_variable_data_type(l.tokens);
-		}
-		
-		retval.push(ParsingData::variable(Variable::new(name ,
-								vtype ,
-								Qualifier::VARIABLE ,
-								Some(break_binary_expression(&mut binexp ,
-											     &scope ,
-											     tmp_count)))));
-		*tmp_count += 1;
-		context.clear();
-		
-		//i += 1;
-	    }else{
 		
 		
-		println!("else met ");
+		
+	    }else {
+		
 		retval.push(parsingvec[i].clone());
-		retval.push(parsingvec[i+1].clone());
-		retval.push(parsingvec[i+2].clone());
-		i += 2;
-		
-		context.clear();
+		i += 1;
 	    }
-
 	    
 
+				
+	}else{
+
+	    retval.push(parsingvec[i].clone());
+	    i += 1;
 	}
-	i += 1;
-	
+
+
     }
 
-//    for i in context.iter(){
-//	retval.push(i.clone());
-//    }
-    
     return retval;
 }

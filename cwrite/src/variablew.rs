@@ -6,29 +6,31 @@ use crate::functionw::write_data_type;
 
 // shit optimization  , please dont forget to optimize
 
-pub fn write_variable(var : Variable ) -> String {
+pub fn write_variable(var : Variable , tabs : String  ) -> String {
 
     let mut retval : Vec<String>  = Vec::new();
 
     if var.clone().var_value.unwrap().tree.len() > 1{
-	retval.push(write_binary_expression_tree(var.clone().var_value.unwrap() , write_data_type(var.clone().var_type)));
+	retval.push(write_binary_expression_tree(var.clone().var_value.unwrap() ,
+						 write_data_type(var.clone().var_type),
+						 tabs.clone()));
 
 	if let Some(Token::t_identifier(last_tmp )) = var.clone().var_value.unwrap().tree[
 	    var.clone().var_value.clone().unwrap().tree.len().clone() - 1]
 	    .exp_value.clone(){
-		retval.push(format!("\t{} {} = {};\n\n" ,write_data_type(var.clone().var_type) , var.clone().var_id , last_tmp));
+		retval.push(format!("{}\t{} {} = {};\n\n",tabs ,write_data_type(var.clone().var_type) , var.clone().var_id , last_tmp));
 	}
 	
     }else if var.clone().var_value.unwrap().tree.len() > 0{
 	
 	if let Some(Token::t_identifier(last_tmp )) = var.clone().var_value.unwrap().tree[0].exp_value.clone(){
-	    retval.push(format!("\t{} {} = {};\n\n" ,write_data_type(var.clone().var_type) , var.var_id , last_tmp));
+	    retval.push(format!("{}\t{} {} = {};\n\n" ,tabs , write_data_type(var.clone().var_type) , var.var_id , last_tmp));
 	}else if let Some(Token::t_literal(last_tmp )) = var.clone().var_value.unwrap().tree[0].exp_value.clone(){
 	    if let Literal::integer_literal(l) = last_tmp{
-		retval.push(format!("\t{} {} = {};\n\n" ,write_data_type(var.clone().var_type) , var.var_id , l));
+		retval.push(format!("{}\t{} {} = {};\n\n",tabs ,write_data_type(var.clone().var_type) , var.var_id , l));
 	    }
 	    else if let Literal::decimal_literal(l) = last_tmp{
-		retval.push(format!("\t{} {} = {};\n\n" ,write_data_type(var.clone().var_type) , var.var_id , l));
+		retval.push(format!("{}\t{} {} = {};\n\n",tabs ,write_data_type(var.clone().var_type) , var.var_id , l));
 	    }
 	}
     }
@@ -38,7 +40,7 @@ pub fn write_variable(var : Variable ) -> String {
     
 }
 
-pub fn write_binary_expression_tree(tree : BinaryExpressionTree , var_type : String ) -> String{
+pub fn write_binary_expression_tree(tree : BinaryExpressionTree , var_type : String , tabs : String ) -> String{
         
     let mut retval : Vec<String>  = Vec::new();
     
@@ -72,7 +74,7 @@ pub fn write_binary_expression_tree(tree : BinaryExpressionTree , var_type : Str
 	}else{
 	    printOp.clear();
 	}
-	retval.push(format!("\t{} {} = {} {} {} ;\n" , var_type , printName , printLeft , printOp , printRight));
+	retval.push(format!("{}\t{} {} = {} {} {} ;\n" , tabs ,var_type , printName , printLeft , printOp , printRight));
     }
    
     return retval.join("");

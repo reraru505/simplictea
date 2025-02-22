@@ -19,7 +19,7 @@ fn main() {
  	println!("{:#?}", i);
     }
     let parsing_data = parse(lexemes);
-  //  cwrite(parsing_data);
+    cwrite(parsing_data);
     
     
     

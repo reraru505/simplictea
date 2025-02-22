@@ -119,9 +119,11 @@ pub fn find_iterator_in_scope(parsingvec : Vec<ParsingData> , scope : String  ) 
 		    
 		}
 		
-		i += 6;
+	
 		
 		if is_iter_over_range == true {
+
+		    i += 6;
 		    
 		    iterator.iter_type = Some(IteratorType::IterateOverRange);
 		    
@@ -137,6 +139,7 @@ pub fn find_iterator_in_scope(parsingvec : Vec<ParsingData> , scope : String  ) 
 				if let ParsingData::lexeme(lex) = parsingvec[i].clone(){
 				    
 				    if matches!(lex.tokens , Token::t_stc(STC::stc_scope_begin(_))){
+					body_block.push(parsingvec[i].clone());
 					
 					found_inner += 1;
 					
@@ -144,6 +147,7 @@ pub fn find_iterator_in_scope(parsingvec : Vec<ParsingData> , scope : String  ) 
 					
 					if found_inner > 0{
 					    found_inner -= 1;
+					    body_block.push(parsingvec[i].clone());
 					    
 					}else{
 					    
@@ -176,7 +180,6 @@ pub fn find_iterator_in_scope(parsingvec : Vec<ParsingData> , scope : String  ) 
 
 		iter_count += 1;
 		retval.push(ParsingData::iterator(iterator ));
-		
 		i += 1;
 
 

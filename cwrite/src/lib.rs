@@ -21,8 +21,8 @@ pub fn cwrite(parsingvec : Vec<ParsingData >){
 
 	if matches!(i , ParsingData::functiondef(_)){
 	    if let ParsingData::functiondef(fndef) = i{
-		println!("{}" , write_function_def(fndef.clone()));
-		println!("{}" , write_function_body(fndef.clone()));
+		println!("{}" , write_function_def(fndef.clone(), "".to_string()));
+		println!("{}" , write_function_body(fndef.clone() , "".to_string()));
 
 	    }
 	}

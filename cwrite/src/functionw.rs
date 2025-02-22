@@ -36,35 +36,28 @@ pub fn write_function_args(fn_args : Vec<Variable>) -> String{
     
 }
 
-pub fn write_function_id(fid : Token) -> String{
-    if let Token::t_identifier(s) = fid {
-	return s;
-    }else {
-	// this case should not occur 
-	return "error".to_string();
-    }
-}
-    
-pub fn write_function_def(fdef : FunctionDef ) -> String {
+pub fn write_function_def(fdef : FunctionDef , tabs : String ) -> String {
+
     
     if matches!(fdef.fn_type , Some(FunctionDefType::DEF_WITH_ARGS) ){
-	return format!("{} {} {}",
+	return format!("{}{} {} {}\n",tabs,
 		       write_data_type(fdef.fn_return_type ) ,
-		       write_function_id(fdef.fn_id) ,
+		       fdef.fn_id ,
 		       write_function_args(fdef.fn_args.unwrap()) );
     }else {
-	return format!("{} {} {}",
+	return format!("{}{} {} {}\n",tabs,
 		       write_data_type(fdef.fn_return_type ) ,
-		       write_function_id(fdef.fn_id) ,
+		       fdef.fn_id ,
 		       "()".to_string());
     }
     
 } 
 
-pub fn write_function_body(fdef : FunctionDef ) -> String{
+pub fn write_function_body(fdef : FunctionDef , tabs : String) -> String{
 
+    
     let mut retval : Vec<String> = Vec::new();
-    retval.push("{\n".to_string());
+    retval.push(format!("{}{{\n",tabs));
 
     if let Some(block ) = fdef.fn_body {
 
@@ -75,24 +68,31 @@ pub fn write_function_body(fdef : FunctionDef ) -> String{
 	    if matches!(i.clone() , ParsingData::function_return(_)){
 		
 		if let ParsingData::function_return(ret) = i.clone(){
-		    retval.push(write_return(ret , fdef.fn_return_type.clone()));
+		    retval.push(write_return(ret , fdef.fn_return_type.clone() , tabs.clone()));
 		}
 	    }
 	    
 	    if matches!(i.clone() , ParsingData::variable(_)){
 		
 		if let ParsingData::variable(var ) = i.clone(){
-		    retval.push(write_variable(var));
+		    retval.push(write_variable(var , tabs.clone()));
 		}
 		
 	    }
 
-	   
+	    if matches!(i.clone() , ParsingData::functiondef(_)){
+
+		if let ParsingData::functiondef(fdef ) = i.clone(){
+		    
+		    retval.push(write_function_def(fdef.clone() , format!("{}\t",tabs)) );
+		    retval.push(write_function_body(fdef.clone() , format!("{}\t",tabs)));
+		}
+	    } 
 	}
 	
     }
 
-    retval.push("}\n".to_string());
+    retval.push(format!("{}}}\n",tabs));
 
     return retval.join("");
     
