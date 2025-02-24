@@ -11,6 +11,15 @@ pub enum BinaryExpressionType{
     Subtraction_op,
     Multiplication_op,
     Division_op,
+
+    And_op ,
+    Or_op  ,
+    Xor_op ,
+
+    Check_equal_op  ,
+    Not_equal_op    ,
+    Greater_than_op ,
+    Lesser_than_op  ,
 }
 
 #[derive(Debug)]

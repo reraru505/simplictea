@@ -18,6 +18,9 @@ impl Operator_Checker{
 	    s if *s == "-" => return Some(Token::t_operator(Operator::subtraction_op(s.clone()))) ,
 	    s if *s == "*" => return Some(Token::t_operator(Operator::multiplication_op(s.clone()))) ,
 	    s if *s == "/" => return Some(Token::t_operator(Operator::division_op(s.clone()))) ,
+	    s if *s == "!" => return Some(Token::t_operator(Operator::not_op(s.clone()))) ,
+	    s if *s == ">" => return Some(Token::t_operator(Operator::greater_than_op(s.clone()))) ,
+	    s if *s == "<" => return Some(Token::t_operator(Operator::lesser_than_op(s.clone()))) ,
 	    _ => return None,
 	}
     }

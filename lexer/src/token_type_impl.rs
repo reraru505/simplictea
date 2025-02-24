@@ -88,6 +88,9 @@ impl PartialEq for Statement{
 	    (Statement::for_statement(a) , Statement::for_statement(b) ) => return true,
 	    (Statement::in_statement(a) , Statement::in_statement(b) ) => return true,
 	    (Statement::to_statement(a) , Statement::to_statement(b) ) => return true,
+	    (Statement::and_operator(a) , Statement::and_operator(b)) => return true,
+	    (Statement::or_operator(a) , Statement::or_operator(b) ) => return true ,
+	    (Statement::xor_operator(a) , Statement::xor_operator(b)) => return true,
 	    _ => return false,
 	    
 	}
@@ -110,6 +113,10 @@ impl Clone for Statement{
 	    Statement::for_statement(a)    => Statement::for_statement(a.clone())    ,
 	    Statement::in_statement(a)    => Statement::in_statement(a.clone())    ,
 	    Statement::to_statement(a)    => Statement::to_statement(a.clone())    ,
+
+	    Statement::and_operator(a)    => Statement::and_operator(a.clone())    ,
+	    Statement::or_operator(a)     => Statement::or_operator(a.clone())     ,
+	    Statement::xor_operator(a)    => Statement::xor_operator(a.clone())    ,
 	}
 	
     }
@@ -195,6 +202,17 @@ impl PartialEq for Operator{
 	    (Operator::subtraction_op(a),Operator::subtraction_op(b)) => return true,
 	    (Operator::multiplication_op(a),Operator::multiplication_op(b)) => return true,
 	    (Operator::division_op(a),Operator::division_op(b)) => return true,
+
+	    (Operator::not_op(a),Operator::not_op(b)) => return true,
+	    (Operator::check_equal_op(a),Operator::check_equal_op(b)) => return true,
+	    (Operator::not_equal_op(a),Operator::not_equal_op(b)) => return true,
+	    (Operator::greater_than_op(a),Operator::greater_than_op(b)) => return true,
+	    (Operator::lesser_than_op(a) ,Operator::lesser_than_op(b)) => return true,
+
+	    (Operator::and_op(a),Operator::and_op(b))  => return true,
+	    (Operator::or_op(a),Operator::or_op(b))  => return true,
+	    (Operator::xor_op(a),Operator::xor_op(b))  => return true,
+	    
 	    _ => return false,
 	}
     }
@@ -212,6 +230,16 @@ impl Clone for Operator{
 	    Operator::subtraction_op(a)     =>  Operator::subtraction_op(a.clone())   ,
 	    Operator::multiplication_op(a)  =>  Operator::multiplication_op(a.clone()),
 	    Operator::division_op(a)        =>  Operator::division_op(a.clone())      ,
+	    
+	    Operator::not_op(a)             =>  Operator::not_op(a.clone())               ,
+	    Operator::check_equal_op(a)     =>  Operator::check_equal_op(a.clone())       ,
+	    Operator::not_equal_op(a)       =>  Operator::not_equal_op(a.clone())         ,
+	    Operator::greater_than_op(a)    =>  Operator::greater_than_op(a.clone())      ,
+	    Operator::lesser_than_op(a)     =>  Operator::lesser_than_op(a.clone())       ,
+	    
+	    Operator::and_op(a)    =>  Operator::and_op(a.clone())     ,
+	    Operator::or_op(a)     =>  Operator::or_op(a.clone())      ,
+	    Operator::xor_op(a)    =>  Operator::xor_op(a.clone())     ,
 	}
     }
 }

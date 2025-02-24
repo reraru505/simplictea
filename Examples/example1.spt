@@ -4,29 +4,29 @@
 //    return 0;
 //}
 //
-//add : i32 fn ( a : i32 , b : i32 ,  c : i32 , d : char ){
-//    return a + b;
-//}
+add : i32 fn ( a : i32 , b : i32 ){
+    return a + b;
+}
 //b : i32 = a + 6 + 6 * (35 + 66) / 6 + 6 * (7 + (7 + (6 + 7)));
 
 main : i32 fn {
 
-     a : i32 = 44;
+	a : i32 = 4 ;
+	add(8 , 9);
 
-
-
-     d : i32 = 5 + 6;
-     c : i32 = a + b;
-
-  //  for i in 0 to d {
-  //     a : i32 = 55;
-  //  }
-
-    inner : i32 fn {
-     	   return 0;
-    }
-
-     return 0;
+	
+	d : i32 = 5 + 6;
+	c : i32 = a + b;
+	
+	for i in 0 to d {
+		a : i32 = 55;
+	}
+	
+	inner : i32 fn {
+		return 0;
+	}
+	
+	return 0  + 0;
 }
 
 //for i in 0 to 5 {
@@ -39,4 +39,10 @@ main : i32 fn {
 //
 //}
 
+
+//if a == b {
+//   return 0;
+//}
+
+// a + 1 == b and b == c 
 

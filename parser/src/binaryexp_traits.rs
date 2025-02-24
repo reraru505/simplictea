@@ -11,6 +11,16 @@ impl fmt::Display for BinaryExpressionType{
 	    BinaryExpressionType::Subtraction_op => write!(f, " - ", ),
 	    BinaryExpressionType::Multiplication_op => write!(f, " * ", ),
 	    BinaryExpressionType::Division_op => write!(f, " / ", ),
+
+	    
+	    BinaryExpressionType::And_op  => write!(f, " && ", ),
+	    BinaryExpressionType::Or_op   => write!(f, " || ", ),
+	    BinaryExpressionType::Xor_op  => write!(f, " xor ", ),
+	    
+	    BinaryExpressionType::Check_equal_op  => write!(f, " == ", ),
+	    BinaryExpressionType::Not_equal_op    => write!(f, " != ", ),
+	    BinaryExpressionType::Greater_than_op => write!(f, " > ", ),
+	    BinaryExpressionType::Lesser_than_op  => write!(f, " < ", ),
 	}
     }
     
@@ -24,6 +34,15 @@ impl Clone for BinaryExpressionType{
 	    BinaryExpressionType::Subtraction_op => BinaryExpressionType::Subtraction_op,
 	    BinaryExpressionType::Multiplication_op => BinaryExpressionType::Multiplication_op,
 	    BinaryExpressionType::Division_op => BinaryExpressionType::Division_op,
+
+	    BinaryExpressionType::And_op  => BinaryExpressionType::And_op  ,
+	    BinaryExpressionType::Or_op   => BinaryExpressionType::Or_op   ,
+	    BinaryExpressionType::Xor_op  => BinaryExpressionType::Xor_op  ,
+	    
+	    BinaryExpressionType::Check_equal_op  => BinaryExpressionType::Check_equal_op  ,
+	    BinaryExpressionType::Not_equal_op    => BinaryExpressionType::Not_equal_op    ,
+	    BinaryExpressionType::Greater_than_op => BinaryExpressionType::Greater_than_op ,
+	    BinaryExpressionType::Lesser_than_op  => BinaryExpressionType::Lesser_than_op  ,
 	}
     }
 }

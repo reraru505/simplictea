@@ -10,13 +10,25 @@ impl BinaryExpressionType{
 	for i in context.iter(){
 	    match i {
 		Token::t_operator(Operator::addition_op(s)) | Token::t_operator(Operator::subtraction_op(s)) =>  {
-		    precedence = precedence.max(2);
+		    precedence = precedence.max(4);
 		} ,
 		Token::t_operator(Operator::multiplication_op(s)) | Token::t_operator(Operator::division_op(s)) =>  {
+		    precedence = precedence.max(5);
+		},
+		Token::t_operator(Operator::and_op(s)) |
+		Token::t_operator(Operator::or_op(s)) |
+		Token::t_operator(Operator::xor_op(s)) =>  {
+		    precedence = precedence.max(2);
+		},
+		Token::t_operator(Operator::check_equal_op(s)) |
+		Token::t_operator(Operator::not_equal_op(s))|
+		Token::t_operator(Operator::greater_than_op(s)) |
+		Token::t_operator(Operator::lesser_than_op(s)) =>  {
 		    precedence = precedence.max(3);
 		},
 		Token::t_stc(STC::stc_arg_begin(s)) =>{
-		    precedence = precedence.max(4);
+		    
+		    precedence = precedence.max(6);
 		},
 		Token::t_operator(Operator::assignment_op(s)) =>{
 		    precedence = precedence.max(1);
@@ -32,8 +44,21 @@ impl BinaryExpressionType{
 
     pub fn check_precedence(token :Token) -> usize{
 	match token{
-	    Token::t_operator(Operator::addition_op(s)) | Token::t_operator(Operator::subtraction_op(s)) => return 2,
-	    Token::t_operator(Operator::multiplication_op(s)) | Token::t_operator(Operator::division_op(s)) => return 3,
+	    Token::t_operator(Operator::addition_op(s)) |
+	    Token::t_operator(Operator::subtraction_op(s)) => return 4,
+	    
+	    Token::t_operator(Operator::multiplication_op(s)) |
+	    Token::t_operator(Operator::division_op(s)) => return 5,
+	    
+	    Token::t_operator(Operator::and_op(s)) |
+	    Token::t_operator(Operator::or_op(s)) |
+	    Token::t_operator(Operator::xor_op(s)) => return 2 ,
+	    
+	    Token::t_operator(Operator::check_equal_op(s)) |
+	    Token::t_operator(Operator::not_equal_op(s))|
+	    Token::t_operator(Operator::greater_than_op(s)) |
+	    Token::t_operator(Operator::lesser_than_op(s)) => return 3,
+	    
 	    Token::t_operator(Operator::assignment_op(s)) => return 1,
 	    _ => return 0,
 	}
@@ -47,6 +72,15 @@ impl BinaryExpressionType{
 	    Some(Token::t_operator(Operator::subtraction_op(_))) => return BinaryExpressionType::Subtraction_op,
 	    Some(Token::t_operator(Operator::division_op(_))) => return BinaryExpressionType::Division_op,
 	    Some(Token::t_operator(Operator::multiplication_op(_))) => return BinaryExpressionType::Multiplication_op,
+
+	    Some(Token::t_operator(Operator::and_op(_))) => return BinaryExpressionType::And_op ,
+	    Some(Token::t_operator(Operator::or_op(_)) ) =>  return BinaryExpressionType::Or_op  ,
+	    Some(Token::t_operator(Operator::xor_op(_))) => return BinaryExpressionType::Xor_op ,
+
+	    Some(Token::t_operator(Operator::check_equal_op(_)))  => return BinaryExpressionType::Check_equal_op ,
+	    Some(Token::t_operator(Operator::not_equal_op(_))  )  => return BinaryExpressionType::Not_equal_op   ,
+	    Some(Token::t_operator(Operator::greater_than_op(_))) => return BinaryExpressionType::Greater_than_op,
+	    Some(Token::t_operator(Operator::lesser_than_op(_)))  => return BinaryExpressionType::Lesser_than_op ,
 	    _ => return BinaryExpressionType::Assignment_op,
 	}
 	
@@ -60,6 +94,16 @@ impl BinaryExpressionType{
 	    Token::t_operator(Operator::subtraction_op(_)) => return true,
 	    Token::t_operator(Operator::division_op(_)) => return true,
 	    Token::t_operator(Operator::multiplication_op(_)) => return true,
+
+	    Token::t_operator(Operator::and_op(_)) => return true,
+	    Token::t_operator(Operator::or_op(_)) => return true,
+	    Token::t_operator(Operator::xor_op(_)) => return true,
+
+	    Token::t_operator(Operator::check_equal_op(_)) => return true,
+	    Token::t_operator(Operator::not_equal_op(_)) => return true,
+	    Token::t_operator(Operator::greater_than_op(_)) => return true,
+	    Token::t_operator(Operator::lesser_than_op(_)) => return true,
+	    
 	    _ => return false,
 	}
 	

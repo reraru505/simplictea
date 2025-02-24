@@ -58,6 +58,11 @@ pub fn find_statement(input_string : Rc<RefCell<String>>) -> Option<Statement> {
 	    s if *s == "for".to_string()    => return Some(Statement::for_statement("for".to_string())),
 	    s if *s == "in".to_string()    => return Some(Statement::in_statement("in".to_string())),
 	    s if *s == "to".to_string()    => return Some(Statement::to_statement("to".to_string())),
+	    
+	    //logical operators handled as keywords
+	    s if *s == "and".to_string()    => return Some(Statement::and_operator("and".to_string())),
+	    s if *s == "or".to_string()    => return Some(Statement::or_operator("or".to_string())),
+	    s if *s == "xor".to_string()    => return Some(Statement::xor_operator("xor".to_string())),
 	    _ => return None,
 	    
 	}

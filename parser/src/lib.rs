@@ -13,7 +13,7 @@ pub mod global;
 pub mod function;
 pub mod function_helpers;
 pub mod function_traits;
-pub mod function_args;
+pub mod function_call;
 pub mod function_return;
 
 pub mod variable;

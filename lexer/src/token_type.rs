@@ -34,6 +34,13 @@ pub enum Statement{
     for_statement(String),
     in_statement(String),
     to_statement(String),
+
+    
+    //logical operators are handled as keywords 
+    and_operator(String),        // and
+    or_operator(String),	// or
+    xor_operator(String),	// xor
+    
 } 
 
 #[derive(Debug)]
@@ -69,13 +76,27 @@ pub enum STC {
 #[derive(Debug)]
 pub enum Operator{
 
-    assignment_op(String),
-    type_assignment_op(String),
+    assignment_op(String),      // =
+    type_assignment_op(String), // :
     
-    addition_op(String),
-    subtraction_op(String),
-    multiplication_op(String),
-    division_op(String),
+    addition_op(String),        // +
+    subtraction_op(String),     // -
+    multiplication_op(String),  // *
+    division_op(String),        // /
+
+    //comparision operatos
+    not_op(String),             // !
+    check_equal_op(String),     // ==
+    not_equal_op(String),       // !=
+    greater_than_op(String),    // >
+    lesser_than_op(String),     // <
+
+    
+    //logical operators  
+    and_op(String),     // and
+    or_op(String),	// or
+    xor_op(String),	// xor
+
     
 }
 

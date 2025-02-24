@@ -1,5 +1,5 @@
 use crate::parser::variable::Variable;
-use crate::parser::binaryexp::BinaryExpressionTree;
+use crate::parser::binaryexp::{BinaryExpressionType , BinaryExpressionTree};
 use crate::lexer::token_type::{Token , Literal };
 use crate::functionw::write_data_type;
 
@@ -48,7 +48,8 @@ pub fn write_binary_expression_tree(tree : BinaryExpressionTree , var_type : Str
     let mut printRight = String::new();
     let mut printLeft = String::new();
     let mut printOp = String::new();
-
+    
+    let mut bool_type = false;
     
     for i in tree.tree[0 .. tree.tree.len() - 1].to_vec().iter(){
 	if let Some(Token::t_identifier(s)) = i.exp_value.clone(){
@@ -70,12 +71,38 @@ pub fn write_binary_expression_tree(tree : BinaryExpressionTree , var_type : Str
 	}else{
 	    printRight.clear();
 	}if let Some(b) = i.exp_type.clone(){
+	    if operator_returns_boolean(b.clone()){
+		bool_type = true;
+	    }
 	    printOp = format!("{}",b);
+	    
 	}else{
 	    printOp.clear();
 	}
-	retval.push(format!("{}\t{} {} = {} {} {} ;\n" , tabs ,var_type , printName , printLeft , printOp , printRight));
+	if bool_type == true {
+	    retval.push(format!("{}\t{} {} = {} {} {} ;\n" , tabs ,"bool" , printName , printLeft , printOp , printRight));
+	}else {
+	    retval.push(format!("{}\t{} {} = {} {} {} ;\n" , tabs ,var_type , printName , printLeft , printOp , printRight));
+	}
+	bool_type = false;
     }
    
     return retval.join("");
+}
+
+pub fn operator_returns_boolean( b : BinaryExpressionType) -> bool {
+
+    match b {
+	BinaryExpressionType::And_op => return true ,          
+	BinaryExpressionType::Or_op  => return true,              
+	BinaryExpressionType::Xor_op => return true,          
+			                        
+	BinaryExpressionType::Check_equal_op  => return true, 
+	BinaryExpressionType::Not_equal_op    => return true, 
+	BinaryExpressionType::Greater_than_op => return true,     
+	BinaryExpressionType::Lesser_than_op  => return true,
+
+	_ => return false,
+    }
+    
 }

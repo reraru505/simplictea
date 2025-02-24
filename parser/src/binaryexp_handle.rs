@@ -27,7 +27,7 @@ pub fn break_binary_expression(context : &mut Vec<Token> , scope : &str , tmp_co
     
     let mut tree = BinaryExpressionTree::new();
     tree.maketree(tree_maker);
-    print_binary_expression_tree_debug(tree.clone() );
+//    print_binary_expression_tree_debug(tree.clone() );
 
     return tree;
     
@@ -48,7 +48,7 @@ pub fn handle_binary_expression(context : &mut Vec<Token> ,
     
     while precedence > 1{
 
-	if precedence == 4 {
+	if precedence == 6 {
 	    
 	    conholder.push(newcon.clone());
 	    let mut replacer =  handle_inside_brackets(newcon.clone() );

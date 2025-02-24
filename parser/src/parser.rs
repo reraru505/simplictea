@@ -7,6 +7,7 @@ use crate::global::create_global_scope;
 use crate::iterator::find_iterator_in_scope;
 use crate::variable::find_variable_declarations_in_scope;
 use crate::function_return::find_returns_inside_scope;
+use crate::function_call::find_function_calls_in_scope;
 
 pub fn parser(parsingvec : Vec<ParsingData> ) -> Vec<ParsingData> {
 
@@ -15,9 +16,9 @@ pub fn parser(parsingvec : Vec<ParsingData> ) -> Vec<ParsingData> {
     program.block = find_functions_in_scope(program.block , program.scope.clone() );
     program.block = find_iterator_in_scope(program.block , program.scope.clone() );
     let mut tmp_count = 0;
+    program.block = find_function_calls_in_scope(program.block , program.scope.clone() );
     program.block = find_variable_declarations_in_scope(program.block , program.scope.clone() ,&mut tmp_count );
     program.block = find_returns_inside_scope(program.block , program.scope.clone() ,&mut tmp_count );
-
     
     parse_recurse(&mut program);
 
@@ -40,9 +41,9 @@ fn parse_recurse(block : &mut Block ){
 		    body.block = find_functions_in_scope(body.clone().block , body.scope.clone() );
 		    body.block = find_iterator_in_scope(body.clone().block , body.scope.clone() );
 		    let mut tmp_count = 0;
+		    body.block = find_function_calls_in_scope(body.clone().block , body.scope.clone() );
 		    body.block = find_variable_declarations_in_scope(body.clone().block , body.scope.clone() ,&mut tmp_count );
 		    body.block = find_returns_inside_scope(body.clone().block , body.scope.clone() ,&mut tmp_count );
-		    
 		    if has_scope(body.clone().block){
 			parse_recurse(&mut body);
 		    }
@@ -67,6 +68,7 @@ fn parse_recurse(block : &mut Block ){
 		    body.block = find_functions_in_scope(body.clone().block , body.scope.clone() );
 		    body.block = find_iterator_in_scope(body.clone().block , body.scope.clone() );
 		    let mut tmp_count = 0;
+		    body.block = find_function_calls_in_scope(body.clone().block , body.scope.clone() );
 		    body.block = find_variable_declarations_in_scope(body.clone().block , body.scope.clone() ,&mut tmp_count );
 		    body.block = find_returns_inside_scope(body.clone().block , body.scope.clone() ,&mut tmp_count );
 		    if has_scope(body.clone().block){
