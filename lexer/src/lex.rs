@@ -250,7 +250,7 @@ impl Lexer {
 	    
 	}
 
-	if context_len > 0{
+	if context_len > 0 && bol > 0{
 			
 	    if let Some(a) = kw_checker.find(Rc::clone(&context)) {
 		self.push_lexeme(a , Position{x : bol - context_len , y : line})

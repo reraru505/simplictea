@@ -3,6 +3,7 @@
 
 use crate::lexer::token_type::*;
 use crate::symboltable::symbol::{DataType , Qualifier};
+use crate::parsingdata::ParsingData;
 
 #[derive(Debug)]
 pub enum BinaryExpressionType{
@@ -44,4 +45,3 @@ pub struct BinaryExpressionBlock{
     pub b_type : DataType,
     pub b_qualifier : Qualifier,
 }
-

@@ -8,6 +8,19 @@ use crate::binaryexp_helpers::*;
 
 pub fn break_binary_expression(context : &mut Vec<Token> , scope : &str , tmp_count : &mut usize  ) -> BinaryExpressionTree{
 
+    if context.len() == 1 {
+	let retval = vec![BinaryExpression{
+	    exp_value : Some(context[0].clone()),
+	    exp_type : None ,
+	    exp_left : None ,
+	    exp_right : None ,
+	    
+	}];
+	return BinaryExpressionTree{
+	    tree : retval,
+	}
+    }
+    
     let mut new_context = remove_brackets_from_single_token_inside_brackets(Rc::new(RefCell::new(context.clone())));
     
 //    for i in new_context.clone().iter(){

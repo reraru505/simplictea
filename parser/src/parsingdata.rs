@@ -1,5 +1,6 @@
 //use crate::expressions::*;
 //use crate::lexer::token_type::*;
+#![allow(non_camel_case_types)]
 
 use crate::function::FunctionDef;
 use crate::lexer::lex::Lexeme;
@@ -13,6 +14,7 @@ struct Parser;
 #[derive(Debug)]
 pub enum ParsingData{
     lexeme( Lexeme)  ,
+    
     binexp( BinaryExpressionBlock),
     functiondef (FunctionDef),
     functioncall(FunctionCall),

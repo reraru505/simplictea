@@ -1,48 +1,90 @@
+// this is an example of variable definiton without a valuie
+// integer variables defined without a value will be set to zero by default
+// decimal variables defined without a value will be set to zero by default
+// character variables defined without a value will be set to zero by default
+// String variables defined without a value will be set to "" by default
+
+a : i32;
+
+// this is an example of variable definiton with a value
+
+a2 : i32 = 5;
+
+// these are the primitive types supported by the compiler
 //
-//foo : i32 fn (hello : i32) {
-//
-//    return 0;
-//}
-//
-add : i32 fn ( a : i32 , b : i32 ){
-    return a + b;
-}
-//b : i32 = a + 6 + 6 * (35 + 66) / 6 + 6 * (7 + (7 + (6 + 7)));
+// i32    : 32 bit integer type
+// i64    : 64 bit integer type
+// f32    : 32 bit floating point type
+// f64    : 64 bit floating point type
+// char   : 8 bit character
+// string : array of characters
+// bool   : true of false
+// void   : datatype with no known type
+
+
+// these are the examples of variable definition with these types
+
+one   : i32    = 5;
+two   : i64    = 767544;
+three : f32    = 5454.6;
+four  : f64    = 545345.76576;
+five  : char   = 'c';
+six   : string = "hello";
+
+// this is an example of function definition
+
+// this is a function definition that takes no arguments
 
 main : i32 fn {
-
-	a : i32 = 4 ;
-	add(8 , 9);
-
 	
-	d : i32 = 5 + 6;
-	c : i32 = a + b;
-	
-	for i in 0 to d {
-		a : i32 = 55;
-	}
-	
-	inner : i32 fn {
-		return 0;
-	}
-	
-	return 0  + 0;
 }
 
-//for i in 0 to 5 {
-//
-//    a : i32 = 4;
-//
-//    inner : i32 fn {
-//    	  a : i32 = 0;
-//    }
-//
-//}
+// this is a function definition that takes some argument
 
+add : i32 fn ( a : i32 , b : i32 ) {
+	
+	return a + b;
+}
 
-//if a == b {
-//   return 0;
-//}
+// this is an example of iterator that iterates a value over range
 
-// a + 1 == b and b == c 
+for i : i32 in 0 to 5 {
+	a = a + 1;
+}
 
+// this is an example of iterator that loops while a condition is true
+
+for i == 5 {
+	i =  i + 1;
+}
+
+// another example
+
+condition : bool = true
+
+for condition  {
+	condition = false;
+}
+
+// this is an example of if conditional statement
+
+if condition {
+	a = 5;
+}else {
+	a = 6;
+}
+
+// this is an example of switch conditional statement
+
+if a == {
+	
+	5 => b = 1 ;
+	
+	6 => b = 2 ;
+	
+	7 => b = 3 ;
+
+	else => b = 0;
+}
+
+// operators will be explained in the next section 

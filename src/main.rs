@@ -12,8 +12,8 @@ use crate::lex_validator::validate;
 
 fn main() {
 
-    let lexemes : Vec<Lexeme> = lexer::lexer("./Examples/example1.spt".to_string());
-    let lexemes = validate("./Examples/example1.spt".to_string() , lexemes);
+    let lexemes : Vec<Lexeme> = lexer::lexer("./Examples/testing.spt".to_string());
+    let lexemes = validate("./Examples/testing.spt".to_string() , lexemes);
 
     //for i in lexemes.iter(){
     //	println!("{:#?}", i);
