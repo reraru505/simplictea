@@ -1,103 +1,99 @@
-use crate::expressions::*;
-use crate::lexer::lex::Lexeme;
-use crate::lexer::token_type::*;
-use crate::parsingdata::*;
-use crate::function::*;
-use crate::global::create_global_scope;
-use crate::iterator::find_iterator_in_scope;
-use crate::variable::find_variable_declarations_in_scope;
-use crate::function_return::find_returns_inside_scope;
-use crate::function_call::find_function_calls_in_scope;
+use crate::{
+    expressions::Expression, function_grammer::is_function_def, lexer::lex::Lexeme, scope::Block,
+};
 
-pub fn parser(parsingvec : Vec<ParsingData> ) -> Vec<ParsingData> {
+pub fn parser(inp_lexemes: Vec<Lexeme>) -> Vec<Expression> {}
 
-    let mut program = create_global_scope(parsingvec);
+fn parse_recurse() {}
 
-    program.block = find_functions_in_scope(program.block , program.scope.clone() );
-    let mut tmp_count = 0;
-    program.block = find_iterator_in_scope(program.block , program.scope.clone() , &mut tmp_count );
-    program.block = find_function_calls_in_scope(program.block , program.scope.clone() , &mut tmp_count );
-    program.block = find_variable_declarations_in_scope(program.block , program.scope.clone() ,&mut tmp_count );
-    program.block = find_returns_inside_scope(program.block , program.scope.clone() ,&mut tmp_count );
-    
-    parse_recurse(&mut program);
+fn once(expvec: Vec<Expression>) -> Vec<Expression> {
+    let mut context: Vec<Expression> = Vec::new();
+    let mut retvec: Vec<Expression> = Vec::new();
 
-    return program.block;
-}
+    let mut index: usize = 0;
+    let veclen = expvec.len();
 
-fn parse_recurse(block : &mut Block ){
+    while index < veclen {
+        check_in_once(context.clone(), expvec[index].clone());
 
-    
-
-    for i in 0 .. block.block.len(){
-	
-	if matches!(block.block[i] , ParsingData::functiondef(_)){
-	    println!("Parse_recurse condition 1\n");
-	    if let ParsingData::functiondef(mut fdef ) = block.block[i].clone(){
-		
-		if let Some(mut body) = fdef.fn_body{
-
-		    
-		    body.block = find_functions_in_scope(body.clone().block , body.scope.clone() );
-		    let mut tmp_count = 0;
-		    body.block = find_iterator_in_scope(body.clone().block , body.scope.clone() , &mut tmp_count);
-		    body.block = find_function_calls_in_scope(body.clone().block , body.scope.clone() ,  &mut tmp_count);
-		    body.block = find_variable_declarations_in_scope(body.clone().block , body.scope.clone() ,&mut tmp_count );
-		    body.block = find_returns_inside_scope(body.clone().block , body.scope.clone() ,&mut tmp_count );
-		    if has_scope(body.clone().block){
-			parse_recurse(&mut body);
-		    }
-		    
-		    
-		    
-		    
-		    fdef.fn_body = Some(body);
-		}
-		block.block[i] =  ParsingData::functiondef(fdef);
-		
-	    }
-	}
-	if matches!(block.block[i] , ParsingData::iterator(_)){
-
-	    println!("Parse_recurse condition 2\n");
-	    if let ParsingData::iterator(mut iterator ) = block.block[i].clone(){
-		
-		if let Some(mut body) = iterator.iter_body{
-
-		    
-		    body.block = find_functions_in_scope(body.clone().block , body.scope.clone() );
-		    let mut tmp_count = 0;
-		    body.block = find_iterator_in_scope(body.clone().block , body.scope.clone() , &mut tmp_count );
-		    body.block = find_function_calls_in_scope(body.clone().block , body.scope.clone(), &mut tmp_count );
-		    body.block = find_variable_declarations_in_scope(body.clone().block , body.scope.clone() ,&mut tmp_count );
-		    body.block = find_returns_inside_scope(body.clone().block , body.scope.clone() ,&mut tmp_count );
-		    if has_scope(body.clone().block){
-			parse_recurse(&mut body);
-		    }
-		    
-		    
-		    
-		    iterator.iter_body = Some(body);
-		}
-		block.block[i] =  ParsingData::iterator(iterator);
-		
-	    }
-	    
-	}
-    } 
-    
-    
-}
-
-
-
-pub fn has_scope(parsingvec : Vec<ParsingData>) -> bool {
-
-    for i in parsingvec.iter(){
-	if matches!(i , ParsingData::functiondef(_) | ParsingData::iterator(_)){
-	    return true;
-	}
+        index += 1;
     }
 
-    return false;
+    return retvec;
+}
+
+fn check_in_once(context: Vec<Expression>, lookahed: Expression , ) -> Option<usize> {
+    let retval = is_function_def(context, lookahed);
+    if let Some(fdef) = retval {}
+}
+
+
+
+fn extract_body_as_scope(
+    expvec: Vec<Expression>,
+    scope: String,
+    index: &mut usize,
+) -> Option<Block> {
+
+    
+    let mut retval = Block::new(scope);
+    let mut retvec : Vec<Expression> = Vec::new();
+
+    if matches!(
+        expvec[*index],
+        Expression::token(lexer::token_type::Token::t_stc(
+            lexer::token_type::STC::stc_scope_begin(_)
+        ))
+    ) {
+        *index += 1;
+    } else {
+        return None;
+    }
+
+
+
+    //this loop extracts a body of any scoped expression 
+
+    let mut inner = 0;
+
+    loop {
+        if matches!(
+            expvec[*index],
+            Expression::token(lexer::token_type::Token::t_stc(
+                lexer::token_type::STC::stc_scope_begin(_)
+            ))
+        ) {
+
+            retvec.push(expvec[*index].clone());
+            inner += 1;
+
+        } else if matches!(
+            expvec[*index],
+            Expression::token(lexer::token_type::Token::t_stc(lexer::token_type::STC::stc_scope_end(_)))) {
+
+            if inner == 0 {
+                break;
+
+            } else {
+
+                retvec.push(expvec[*index].clone());
+                inner -= 1;
+
+            }
+
+        }else {
+
+            retvec.push(expvec[*index].clone());
+            *index += 1;
+                        
+        }
+    }
+
+
+
+
+
+    retval.body = retvec;
+
+    return Some(retval);
 }

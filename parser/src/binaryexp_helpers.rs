@@ -1,161 +1,92 @@
+use lexer::lex::Lexer;
 
-use crate::binaryexp::*;
-use std::rc::Rc;
-use std::cell::RefCell;
-use crate::lexer::token_type::*;
+use crate::binaryexp::{BinaryExpressionTree, Operator};
+use crate::expressions::Expression;
+use crate::lexer::token_type::Token;
 
+pub fn check_precedence(op: Operator) -> usize {
+    match op {
+        Operator::ADDITION => return 1,
+        Operator::SUBTRACTION => return 1,
 
-pub fn handle_outside_brackets(context : Vec<Token> ,replacer : Token) -> Vec<Token>{
+        Operator::DIVISION => return 2,
+        Operator::MULTIPLICATION => return 2,
 
-    let mut ncon = context.clone();
-    let mut start = 0;
-    
-    for (index , i) in ncon.iter().enumerate() {
-	if matches!(i , Token::t_stc(STC::stc_arg_begin(_))){
-	    start = index ;
-	    break;
-	} 
+        Operator::ASSIGNMENT => 0,
+
+        Operator::AND => return 3,
+        Operator::OR => return 3,
+
+        Operator::CHECKEQUAL => return 4,
+        Operator::CHECKNEQUAL => return 4,
+        Operator::GREATER => return 4,
+        Operator::LESSER => return 4,
+
+        Operator::NOT => return 6,
+        Operator::BRACKET => return 7,
+    }
+}
+
+pub fn get_operator_from_token(tok: Token) -> Option<Operator> {
+    match tok {
+        Token::t_operator(lexer::token_type::Operator::assignment_op(_)) => {
+            return Some(Operator::ASSIGNMENT)
+        }
+
+        Token::t_operator(lexer::token_type::Operator::addition_op(_)) => {
+            return Some(Operator::ADDITION)
+        }
+        Token::t_operator(lexer::token_type::Operator::subtraction_op(_)) => {
+            return Some(Operator::SUBTRACTION)
+        }
+
+        Token::t_operator(lexer::token_type::Operator::multiplication_op(_)) => {
+            return Some(Operator::MULTIPLICATION)
+        }
+        Token::t_operator(lexer::token_type::Operator::division_op(_)) => {
+            return Some(Operator::DIVISION)
+        }
+
+        Token::t_operator(lexer::token_type::Operator::and_op(_)) => return Some(Operator::NOT),
+        Token::t_operator(lexer::token_type::Operator::or_op(_)) => return Some(Operator::OR),
+
+        Token::t_operator(lexer::token_type::Operator::check_equal_op(_)) => {
+            return Some(Operator::CHECKEQUAL)
+        }
+        Token::t_operator(lexer::token_type::Operator::not_equal_op(_)) => {
+            return Some(Operator::CHECKNEQUAL)
+        }
+        Token::t_operator(lexer::token_type::Operator::greater_than_op(_)) => {
+            return Some(Operator::GREATER)
+        }
+        Token::t_operator(lexer::token_type::Operator::lesser_than_op(_)) => {
+            return Some(Operator::LESSER)
+        }
+
+        _ => return None,
+    }
+}
+
+pub fn check_highest_precedence(invec: &mut Vec<Token>) -> usize {
+    let mut precedence: usize = 0;
+
+    for i in invec.iter() {
+        if let Some(op) = get_operator_from_token(i.clone()) {
+            if check_precedence(op.clone()) > precedence {
+                precedence = check_precedence(op.clone());
+            }
+        }
     }
 
-    let mut inner = 0;
-    let mut end = 0;
-    let mut index = start + 1;
-    let len = ncon.len().clone();
-    
-    while index < len {
-	
-	if matches!(ncon[index] , Token::t_stc(STC::stc_arg_begin(_))){
-	    inner += 1;
-	}else if matches!(ncon[index] , Token::t_stc(STC::stc_arg_end(_))){
-	    if inner == 0{
-		end = index;
-		break;
-	    }else{
-		inner -= 1;
-	    }
-	   
-	}
-	index +=1 ;
-    }
-
-    ncon[start] = replacer;
-    ncon.drain(start+1 .. end + 1);
-
-   // for i in ncon.clone(){
-   // 	println!("outer = {:?}", i);
-   // }
-
-    println!("\n");
-    
-    return ncon;
-    
+    return precedence;
 }
 
 
-pub fn handle_inside_brackets(context : Vec<Token> ) -> Vec<Token>{
 
-    
-    let mut ncon = context.clone();
-    let mut start = 0;
-    
-    for (index , i) in ncon.iter().enumerate() {
-	if matches!(i , Token::t_stc(STC::stc_arg_begin(_))){
-	    start = index ;
-	    break;
-	} 
-    }
+// call this function to preprocess the determined expression as Vec<Expression>  before handling binary expression
+pub fn expvec_preprocessor(expvec : Vec<Expression> , bt : &mut BinaryExpressionTree) -> Vec<Token> {
 
-    let mut inner = 0;
-    let mut end = 0;
-    let mut index = start + 1;
-    let len = ncon.len().clone();
-    
-    while index < len {
-	
-	if matches!(ncon[index] , Token::t_stc(STC::stc_arg_begin(_))){
-	    inner += 1;
-	}else if matches!(ncon[index] , Token::t_stc(STC::stc_arg_end(_))){
-	    if inner == 0{
-		end = index;
-		break;
-	    }else{
-		inner -= 1;
-	    }
-	}
-	index +=1 ;
-    }
-
-    let retval = ncon[start + 1 .. end ].to_vec();
-
-  //  for i in retval.clone(){
-  //  	println!("inner = {:?}", i);
-  //  }
-
+    let mut retval : Vec<Token> = Vec::new();
 
     return retval;
-    
-}
-
-
-
-pub fn remove_brackets_from_single_token_inside_brackets(context : Rc<RefCell<Vec<Token>>>) ->Vec<Token>{
-
-    let new_context = context.borrow().clone();
-    let mut replacer : Vec<Token> = Vec::new();
-    let len = new_context.len();
-    let mut index = 0;
-    println!("\n\nskip_single_token_inside_brackets Starts\n\n");
-
-    while index < len {
-
-	if index < (len - 2) &&
-	    matches!(new_context[index] , Token::t_stc(STC::stc_arg_begin(_))) &&
-	    matches!(new_context[index + 2] ,Token::t_stc(STC::stc_arg_end(_))){
-		index += 1;
-		replacer.push(new_context[index].clone());
-		index += 2;
-	}else {
-		
-		replacer.push(new_context[index].clone());
-		index += 1;
-	    }	
-    }
-    println!("\n\nskip_single_token_inside_brackets Ends\n\n");
-    return replacer;
-    
-}
-
-pub fn print_binary_expression_tree_debug(tree : BinaryExpressionTree){
-    
-    let mut printName = String::new();
-    let mut printRight = String::new();
-    let mut printLeft = String::new();
-    let mut printOp = String::new();
-    for i in tree.tree.iter(){
-	if let Some(Token::t_identifier(s)) = i.exp_value.clone(){
-	    printName = s;
-	}else{
-	    printName.clear();
-	}
-	if let Some(Token::t_identifier(s)) = i.exp_left.clone(){
-	    printLeft = s;
-	}else if let Some(Token::t_literal(Literal::integer_literal(s))) = i.exp_left.clone(){
-	    printLeft = s;
-	}else {
-	    printLeft.clear();
-	}
-	if let Some(Token::t_identifier(s)) = i.exp_right.clone(){
-	    printRight = s;
-	}else if let Some(Token::t_literal(Literal::integer_literal(s))) = i.exp_right.clone(){
-	    printRight = s;
-	}else{
-	    printRight.clear();
-	}if let Some(b) = i.exp_type.clone(){
-	    printOp = format!("{}",b);
-	}else{
-	    printOp.clear();
-	}
-	println!("let {} = {} {} {} ;" , printName , printLeft , printOp , printRight);
-    }
-
 }

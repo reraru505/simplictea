@@ -78,13 +78,14 @@ if condition {
 
 if a == {
 	
-	5 => b = 1 ;
+	5 : b = 1 ;
 	
-	6 => b = 2 ;
+	6 : b = 2 ;
 	
-	7 => b = 3 ;
+	7 : b = 3 ;
 
-	else => b = 0;
+	else : b = 0;
 }
 
-// operators will be explained in the next section 
+// operators will be explained in the next section
+

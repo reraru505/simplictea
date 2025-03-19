@@ -1,51 +1,36 @@
-#![allow(non_camel_case_types)]
-#![allow(unused_variables)]
-
-use std::rc::Rc;
-use std::cell::RefCell;
-
-use crate::binaryexp::*;
 use crate::lexer::token_type::Token;
-use crate::symboltable::symbol::DataType;
-use crate::symboltable::symbol::Qualifier;
+use crate::function::{FunctionCall , FunctionDef , FunctionRet}
 
 
-pub struct Scope{
-    scope : Vec<String>,
-}
 #[derive(Debug)]
-pub enum VAR_Definition_Type{
-    def_with_type,
-    def_with_type_as_arg,
-    def_with_type_value,
-    def_with_infered_value,
+pub enum Expression {
+    
+    token(Token),
+    fn_definition(FunctionDef),
+    fn_call(FunctionCall),
+    fn_return(FunctionRet),
+
+    var_definition(),
+    var_assignment(),
+
+    iterator(),
+
+    conditional(),
 }
 
+impl Clone for Expression {
 
+    fn clone(&self) -> Self {
+        match self  {
 
-//pub struct ARGS{
-//    
-//}
-//
-//
-//#[derive(Debug)]
-//pub struct VAR_Definition{
-//    def_type : VAR_Definition_Type ,
-//    data_type : Token,
-//    data_id : Token,
-//    data_value : Token,
-//}
-//
-//
-//#[derive(Debug)]
-//pub enum Expression{
-//    binary_exp(BinaryExpressionBlock),
-//    var_definition(VAR_Definition),
-////    fn_definition(FN_Definition),
-////    if_statement(IF_Statement),
-////    else_if_statement(ELSE_IF_Statement),
-////    else_statement(ELSE_Statement),
-////    for_statement(FOR_Statement),
-//    scope_block(Block),
-//    return_statement(BinaryExpressionBlock),
-//}
+        Expression::token(a) => Expression::token(a.clone()),
+        Expression::fn_definition(a) => Expression::fn_definition(a.clone()),
+        Expression::fn_call(a) => Expression::fn_definition(a.clone()),
+	    Expression::fn_return(a) => Expression::fn_return(a.clone()) ,
+	    
+	    Expression::var_defition(a) => Expression::var_definition(a.clone()),
+	    Expression::var_assignment(a) => Expression::var_assignment(a.clone())
+        }    
+    }
+}
+        
