@@ -11,6 +11,7 @@ pub mod binaryexp_traits;
 pub mod expressions;
 pub mod collector;
 
+pub mod grammer;
 
 pub mod function;
 pub mod function_grammer;

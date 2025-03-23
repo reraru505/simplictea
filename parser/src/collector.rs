@@ -17,6 +17,7 @@ pub fn collect_binary_expression(vecref: Rc<RefCell<Vec<Expression>>>,index: &mu
 
         retval.push(vecref.borrow()[*index].clone());
         *index += 1;
+
     } //loop end
 
     return retval;
@@ -58,6 +59,7 @@ pub fn collect_body(vecref: Rc<RefCell<Vec<Expression>>>, index: &mut usize)
 
         retval.push(vecref.borrow()[*index].clone());
         *index += 1;
+
     } //loop end
 
     return retval;
@@ -78,6 +80,8 @@ pub fn collect_args(vecref: Rc<RefCell<Vec<Expression>>>, index: &mut usize)
         process::exit(-1);
     }
 
+
+    
     loop {
         if is_arg_begin(vecref.borrow()[*index].clone()) {
             retval.push(vecref.borrow()[*index].clone());
@@ -98,6 +102,7 @@ pub fn collect_args(vecref: Rc<RefCell<Vec<Expression>>>, index: &mut usize)
 
         retval.push(vecref.borrow()[*index].clone());
         *index += 1;
+
     } //loop end
 
     return retval;
