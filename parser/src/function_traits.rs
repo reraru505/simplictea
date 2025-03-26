@@ -8,6 +8,7 @@ impl Clone for FunctionDef {
             fn_type: self.fn_type.clone(),
             fn_return_type: self.fn_return_type.clone(),
             fn_body: self.fn_body.clone(),
+            fn_args : self.fn_args.clone(),
         }
     }
 }

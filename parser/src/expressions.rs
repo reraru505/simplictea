@@ -1,3 +1,6 @@
+#![allow(non_camel_case_types)]
+#![allow(unused_imports)]
+
 use crate::lexer::token_type::Token;
 use crate::function::{FunctionCall , FunctionDef , FunctionRet}
 
