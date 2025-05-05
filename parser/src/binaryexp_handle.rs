@@ -1,78 +1,34 @@
-use std::rc::Rc;
-use std::cell::RefCell;
+#![allow(unused_imports)]
 
-use crate::binaryexp::{
-
-    BinaryExpressionTree ,
-    BinaryExpression,
-
+use crate::{
+    binaryexp::Operation,
+    expressions::Expression,
+    lexer::token_type::Token ,
+    lexer::token_type::{
+        STC,
+        Operator,
+    },
+    binaryexp_helpers::get_operator_from_token,
 };
 
-use crate::lexer::{
+pub fn make_operation( invec : Vec<Expression > ) -> Vec<Operation> {
 
-    token_type::Token,
-    token_type::STC ,
-}
+    let mut retval : Vec<Operation> = Vec::new();
 
-use crate::binaryexp_helpers::{
+    for i in invec.iter() {
 
-    check_highest_precedence,
-    get_operator_from_token ,
-    expvec_preprocessor ,
-}
-
-pub fn make_binary_expression_tree (tokvec : Vec<Token> , scope : String , tmp_count : &mut usize )
- -> BinaryExpressionTree {
-
-    let mut precedence = check_highest_precedence(&mut tokvec );
-    
-        
-}
-
-pub fn break_binary_expression(precedence : &mut usize , tokvec : Vec<Token> , scope : String , tmp_count : &mut usize ) -> {
-
-    if precedence == 7 {
-
-        
-    }
-}
-
-
-//helper function to find the bracket
-fn find_bracket_from_index (refvec : Rc<RefCell< Vec<Token> >>  , ex_index : &mut usize ) -> Option<(usize , usize)> {
-
-    let mut retval : (usize , usize ) = (0 , 0);
-
-
-    let mut inner = 0;
-
-    for (index , i ) in refvec.borrow().skip(*ex_index ).iter().enumerate() {
-
-        if matches!(i , Token::t_stc(STC::stc_arg_begin(_))){
-            if inner == 0 {
-                retval = (index , 0);
-                inner += 1;                
-            }else {
-                inner += 1;
-            }
-            
-        }else if matches!(i , Token::t_stc(STC::stc_arg_end(_))){
-            if inner == 0 {
-                retval = (retval.0 , index + 1 );
-                *ex_index = index + 1;
-                break;
-            }else {
-                inner -= 0;
-            }
+        if let Expression::token(tok ) = i.clone(){
+           if matches!(tok.clone() , Token::t_identifier(_)){
+               retval.push(Operation::operand(tok.clone()));
+           }
+           if matches!(tok.clone() , Token::t_operator(_)){
+               retval.push(Operation::operator(
+                   get_operator_from_token(tok)
+               ));
+           }
         }
-        
+
     }
 
-
-    return None ;
-}
-
-pub fn create_sub_expression(refvec : Rc<RefCell< Vec<Token> >> , start : usize , end : usize ) -> Vec<Token> {
-
-    refvec.borrow()[start .. end ].to_vec()
+    return retval;
 }

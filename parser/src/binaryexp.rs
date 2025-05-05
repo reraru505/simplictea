@@ -1,3 +1,5 @@
+#![allow(non_camel_case_types)]
+
 use crate::lexer::token_type::Token;
 
 #[derive(Debug)]
@@ -22,29 +24,30 @@ pub enum Operator {
     BRACKET,
 }
 
+
 #[derive(Debug)]
-pub struct BinaryExpressionTree {
-    pub super_scope: String,
-    pub tree: Vec<BinaryExpression>,
+pub enum Operation {
+    operand(Token),
+    operator(Operator),
+    subexp(usize),
 }
+
+
 
 #[derive(Debug)]
 pub struct BinaryExpression {
+    pub super_scope: String,
+    pub tree: Vec<SingleExpression>,
+}
+
+
+
+#[derive(Debug)]
+pub struct SingleExpression {
     pub id: Token,
     pub operator: Operator,
     pub left: Token,
     pub right: Token,
 }
 
-pub fn new_binary_expression_identifier (name: String) -> Token {
-    return Token::t_identifier(name);
-}
 
-impl BinaryExpression {
-    pub fn new(name : String ) -> Self {
-         Slef {
-             super_scope : name ,
-             tree : Vec::new(),
-         }
-    }
-}

@@ -1,4 +1,4 @@
-use crate::binaryexp::{BinaryExpression, BinaryExpressionTree, Operator};
+use crate::binaryexp::{BinaryExpression, SingleExpression, Operator , Operation};
 
 impl Clone for Operator {
     fn clone(&self) -> Self {
@@ -20,7 +20,7 @@ impl Clone for Operator {
     }
 }
 
-impl Clone for BinaryExpression {
+impl Clone for SingleExpression{
     fn clone(&self) -> Self {
         Self {
             id: self.id.clone(),
@@ -31,11 +31,24 @@ impl Clone for BinaryExpression {
     }
 }
 
-impl Clone for BinaryExpressionTree {
+impl Clone for BinaryExpression {
     fn clone(&self) -> Self {
         Self {
             super_scope: self.super_scope.clone(),
             tree: self.tree.clone(),
         }
+    }
+}
+
+
+impl Clone for Operation{
+    fn clone(&self ) -> Self {
+
+        match self {
+            Operation::operand(a) => return Operation::operand(a.clone()),
+            Operation::operator(a) => return Operation::operator(a.clone()),
+            Operation::subexp(a) => return Operation::subexp(a.clone()),
+        }
+
     }
 }

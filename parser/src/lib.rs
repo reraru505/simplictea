@@ -15,6 +15,8 @@ pub mod grammer;
 
 pub mod function;
 pub mod function_grammer;
+pub mod function_traits;
+
 
 pub mod parser;
 pub mod scope;

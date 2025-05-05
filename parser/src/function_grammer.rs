@@ -163,3 +163,25 @@ pub fn is_function_call(index : &mut usize  , expvec : Rc<RefCell< Vec<Expressio
 
     return None;
 }
+
+pub fn is_function_ret(index : &mut usize , expvec : Rc<RefCell< Vec<Expression> >> , scope : String )
+-> Option<FunctionRet>{
+
+    let last_index = *index;
+    let mut retval = FunctionRet::new();
+
+    if matches!(expvec.borrow()[*index].clone() , Expression::token(
+        Token::t_keyword(Keyword::statement(Statement::return_statement(_)))
+    )){
+
+        *index += 1;
+
+        retval.super_scope = scope.clone();
+        retval.fn_ret = Some(collect_args(Rc::clone(&expvec), index));        
+        return Some(retval);
+
+    }
+
+    *index = last_index;
+    return None;
+}

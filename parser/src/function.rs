@@ -1,4 +1,3 @@
-use crate::binaryexp::BinaryExpressionTree;
 use crate::scope::Block;
 use crate::symboltable::symbol::DataType;
 use crate::expressions::Expression;
@@ -54,5 +53,15 @@ impl FunctionCall {
 #[derive(Debug)]
 pub struct FunctionRet {
     pub super_scope: String,
-    pub fn_ret: Vec<BinaryExpressionTree>,
+    pub fn_ret: Option<Vec<Expression>>,
+}
+
+impl FunctionRet{
+
+    pub fn new() -> Self {
+        Self {
+            super_scope : String::new(),
+            fn_ret : None,
+        }
+    }
 }
