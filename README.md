@@ -1,2 +1,7 @@
 # simplictea
-dirty Bootstrap for programming language , doesn't work right now , please don't use
+
+ > [!WARNING]
+> Does not work right now
+
+
+dirty Bootstrap for my programming language 

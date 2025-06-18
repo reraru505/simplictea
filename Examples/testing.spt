@@ -1,0 +1,15 @@
+// this is the main function
+
+main : i32 fn(){
+
+	a : i32 = 32;
+	b : i32 = 43;
+
+	c : i32 = a + b;
+
+	{
+		a : i32 = 6;
+	}
+
+	return 0;
+}

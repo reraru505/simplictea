@@ -46,6 +46,13 @@ add : i32 fn ( a : i32 , b : i32 ) {
 	return a + b;
 }
 
+
+main fn {
+
+}
+
+
+
 // this is an example of iterator that iterates a value over range
 
 for i : i32 in 0 to 5 {

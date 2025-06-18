@@ -2,7 +2,7 @@
 #![allow(unused_variables)]
 
 use crate::token_type::*;
-
+use std::fmt;
 impl PartialEq for Literal {
 
     fn eq(&self , other : &Self) -> bool{
@@ -291,5 +291,111 @@ impl Clone for Position {
 	    x : self.x,
 	    y : self.y,
 	}
+    }
+}
+
+
+impl fmt::Display for Literal {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Literal::character_literal(c) => write!(f, "'{}'", c),
+            Literal::string_literal(s) => write!(f, "\"{}\"", s),
+            Literal::integer_literal(i) => write!(f, "{}", i),
+            Literal::decimal_literal(d) => write!(f, "{}", d),
+        }
+    }
+}
+
+impl fmt::Display for Data_Type {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Data_Type::CHAR(s) => write!(f, "Char({})", s),
+            Data_Type::VOID(s) => write!(f, "Void({})", s),
+            Data_Type::I32(s) => write!(f, "I32({})", s),
+            Data_Type::I64(s) => write!(f, "I64({})", s),
+            Data_Type::F32(s) => write!(f, "F32({})", s),
+            Data_Type::F64(s) => write!(f, "F64({})", s),
+            Data_Type::STRING(s) => write!(f, "String({})", s),
+        }
+    }
+}
+
+impl fmt::Display for Statement {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Statement::function_marker(s) => write!(f, "fn {}", s),
+            Statement::if_statement(s) => write!(f, "if {}", s),
+            Statement::else_statement(s) => write!(f, "else {}", s),
+            Statement::else_if_statement(s) => write!(f, "else if {}", s),
+            Statement::return_statement(s) => write!(f, "return {}", s),
+            Statement::for_statement(s) => write!(f, "for {}", s),
+            Statement::in_statement(s) => write!(f, "in {}", s),
+            Statement::to_statement(s) => write!(f, "to {}", s),
+            Statement::and_operator(s) => write!(f, "and {}", s),
+            Statement::or_operator(s) => write!(f, "or {}", s),
+            Statement::xor_operator(s) => write!(f, "xor {}", s),
+        }
+    }
+}
+
+impl fmt::Display for Keyword {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Keyword::data_type(dt) => write!(f, "Keyword::DataType({})", dt),
+            Keyword::statement(stmt) => write!(f, "Keyword::Statement({})", stmt),
+        }
+    }
+}
+
+impl fmt::Display for STC {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            STC::stc_scope_begin(c) => write!(f, "{}", c),        // Typically '{'
+            STC::stc_scope_end(c) => write!(f, "{}", c),          // Typically '}'
+            STC::stc_comma_seperator(c) => write!(f, "{}", c),    // Typically ','
+            STC::stc_end_expression(c) => write!(f, "{}", c),     // Typically ';'
+            STC::stc_arg_begin(c) => write!(f, "{}", c),          // Typically '('
+            STC::stc_arg_end(c) => write!(f, "{}", c),            // Typically ')'
+            STC::stc_dot(c) => write!(f, "{}", c),                // Typically '.'
+        }
+    }
+}
+
+impl fmt::Display for Operator {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Operator::assignment_op(c) => write!(f, "{}", c),
+            Operator::type_assignment_op(s) => write!(f, "{}", s),
+            Operator::addition_op(c) => write!(f, "{}", c),
+            Operator::subtraction_op(c) => write!(f, "{}", c),
+            Operator::multiplication_op(c) => write!(f, "{}", c),
+            Operator::division_op(c) => write!(f, "{}", c),
+            Operator::not_op(c) => write!(f, "{}", c),
+            Operator::check_equal_op(s) => write!(f, "{}", s),
+            Operator::not_equal_op(s) => write!(f, "{}", s),
+            Operator::greater_than_op(c) => write!(f, "{}", c),
+            Operator::lesser_than_op(c) => write!(f, "{}", c),
+            Operator::and_op(s) => write!(f, "{}", s),
+            Operator::or_op(s) => write!(f, "{}", s),
+            Operator::xor_op(s) => write!(f, "{}", s),
+        }
+    }
+}
+
+impl fmt::Display for Position {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+
+impl fmt::Display for Token {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Token::t_keyword(kw) => write!(f, "Keyword: [{}]", kw),
+            Token::t_literal(lit) => write!(f, "Literal: [{}]", lit),
+            Token::t_stc(stc) => write!(f, "STC: [{}]", stc),
+            Token::t_operator(op) => write!(f, "Operator: [{}]", op),
+            Token::t_identifier(id) => write!(f, "Identifier: [{}]", id),
+        }
     }
 }
