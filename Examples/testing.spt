@@ -1,15 +1,56 @@
 // this is the main function
 
-main : i32 fn(){
+//main : i32 fn(){
+//
+//	a : i32 = 32;
+//	b : i32 = 43;
+//
+//	c : i32 = a + b;
+//
+//	{
+//		a : i32 = 6;
+//	}
+//
+//	return 0;
+//}
 
-	a : i32 = 32;
-	b : i32 = 43;
+struct foo {
+	barr : i32;
+} 
 
-	c : i32 = a + b;
+struct bapple {
+	a : i32 ;
+	l : foo ;
+}
 
-	{
-		a : i32 = 6;
+
+happle : i32 fn (b : i32 , c : i32 ){
+
+	z : bapple ;
+
+
+	z.a = c;
+
+	z.l.barr = c;
+
+	return z.a;
+
+}
+
+main : i32 fn () {
+
+	a : i32 = happle(7 , 6);
+
+	if a < 6 {
+		a = 5;
+	}else{
+		a = 9;
+	}
+
+	for a < 6 {
+		a = a + 1;
 	}
 
 	return 0;
+	
 }

@@ -12,22 +12,26 @@ use lexer::lexer;
 use crate::lexer::lex::Lexeme;
 use crate::lex_validator::validate;
 
-use crate::parser::preparser::exprules::lexemes_to_preparsingdata;
-use crate::parser::preparser::exprules::get_all_blocks;
-use crate::parser::preparser::exprules::get_all_expressions;
+use crate::parser::parser::Parser;
+use crate::parser::statement_parser;
+
 
 fn main() {
 
     let lexemes : Vec<Lexeme> = lexer::lexer("./Examples/testing.spt".to_string());
     let lexemes = validate("./Examples/testing.spt".to_string() , lexemes);
 
-    let prepar = lexemes_to_preparsingdata(lexemes);
-    let prepar = get_all_blocks(prepar);
-    let prepar = get_all_expressions(prepar); 
+   for i in lexemes.iter() {
+       println!("{:#?}" , i);
+   }
 
-    for i in prepar.iter(){
-        i.print();
-    }
+   println!(" len of lexeme = {}" , lexemes.len());
+    let mut parser = Parser::new(lexemes);
+
+    let retval = parser.parse();
+
+    println!("{:#?}" , retval);
+    
 }
 
 

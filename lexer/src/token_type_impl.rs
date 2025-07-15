@@ -115,6 +115,7 @@ impl Clone for Statement{
 	    Statement::for_statement(a)    => Statement::for_statement(a.clone())    ,
 	    Statement::in_statement(a)    => Statement::in_statement(a.clone())    ,
 	    Statement::to_statement(a)    => Statement::to_statement(a.clone())    ,
+            Statement::struct_statement(a) => Statement::struct_statement(a.clone()),
 
 	    Statement::and_operator(a)    => Statement::and_operator(a.clone())    ,
 	    Statement::or_operator(a)     => Statement::or_operator(a.clone())     ,
@@ -277,6 +278,7 @@ impl Clone for  Token{
 	    Token::t_stc(a)        =>  Token::t_stc(a.clone())        ,
 	    Token::t_operator(a)   =>  Token::t_operator(a.clone())   ,
 	    Token::t_identifier(a) =>  Token::t_identifier(a.clone()) ,
+            Token::t_eof => Token::t_eof,
 	}
 	
     }
@@ -334,6 +336,7 @@ impl fmt::Display for Statement {
             Statement::and_operator(s) => write!(f, "and {}", s),
             Statement::or_operator(s) => write!(f, "or {}", s),
             Statement::xor_operator(s) => write!(f, "xor {}", s),
+            Statement::struct_statement(s) => write!(f, "struct {}" , s),
         }
     }
 }
@@ -396,6 +399,7 @@ impl fmt::Display for Token {
             Token::t_stc(stc) => write!(f, "STC: [{}]", stc),
             Token::t_operator(op) => write!(f, "Operator: [{}]", op),
             Token::t_identifier(id) => write!(f, "Identifier: [{}]", id),
+            Token::t_eof => write!(f , "EOF"),
         }
     }
 }

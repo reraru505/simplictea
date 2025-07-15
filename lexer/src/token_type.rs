@@ -32,6 +32,8 @@ pub enum Statement {
     in_statement(String),
     to_statement(String),
 
+    struct_statement(String),
+
     //logical operators are handled as keywords
     and_operator(String), // and
     or_operator(String),  // or
@@ -96,4 +98,6 @@ pub enum Token {
     t_stc(STC),
     t_operator(Operator),
     t_identifier(String),
+    t_eof,
 }
+
