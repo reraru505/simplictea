@@ -8,6 +8,6 @@ lexer = {path = "./lexer"}
 lex_validator = {path = "./lex_validator"}
 parser = {path = "./parser"}
 symboltable = {path = "./symboltable"}
-ir={path = "./ir"}
 cli={path = "./cli"}
 cwrite = {path = "./cwrite"}
+target_qbe = {path = "./target_qbe"}

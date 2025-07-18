@@ -1,0 +1,8 @@
+[package]
+name = "target_qbe"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+qbe = "2.5.0"
+parser = {path = "../parser/"}

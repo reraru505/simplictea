@@ -2,7 +2,7 @@ extern crate lexer;
 extern crate lex_validator;
 extern crate parser;
 extern crate cwrite;
-
+extern crate target_qbe;
 
 
 
@@ -14,6 +14,7 @@ use crate::lex_validator::validate;
 
 use crate::parser::parser::Parser;
 use crate::parser::statement_parser;
+use crate::target_qbe::sections::Custom_Types_Handler;
 
 
 fn main() {
@@ -31,6 +32,11 @@ fn main() {
     let retval = parser.parse();
 
     println!("{:#?}" , retval);
+
+    let mut type_handler = Custom_Types_Handler::new();
+
+    type_handler.find_all_types_in_ast(retval);
+    type_handler.display_types();
     
 }
 

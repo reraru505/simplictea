@@ -20,7 +20,7 @@ struct foo {
 
 struct bapple {
 	a : i32 ;
-	l : foo ;
+	l : i64 ;
 }
 
 
