@@ -1,52 +1,91 @@
-use parser::ast::*;
-use crate::sections::Custom_Types_Handler;
-use qbe::*;
+use crate::parser::ast::*;
 use crate::parser::ast::AST_TypeAnnotation;
-use qbe::Type;
+use crate::gen_ir::{TYPE_Handler, QBE_TYPES, STATEMENT};
 
-use std::rc::Rc;
-use std::cell::RefCell;
-
-pub fn find_all_types_in_ast(custom_type_handler: Rc<RefCell<Custom_Types_Handler>>, ast: Vec<AST_Node>) {
-    let handler = custom_type_handler;
+impl QBE_TYPES {
     
-    for node in ast {
-        if let AST_Node::statement(AST_Statement::STRUCTURE { name, body }) = node {
-            // Operation 1
-            {
-                let mut h = handler.borrow_mut();
-                h.type_lookup.insert(get_name_of_identifier(name.clone()), h.counter);
-                h.counter += 1;
-            }
-            
-            // Operation 2
-            let items = {
-                let mut h = handler.borrow_mut();
-                h.unwrap_structure_body(body)
-            };
-            
-            // Operation 3
-            {
-                let mut h = handler.borrow_mut();
-                h.custom_types.push(
-                    TypeDef { 
-                        name: get_name_of_identifier(name.clone()), 
-                        align: None,
-                        items 
-                    }
-                );
-            }
+    pub fn get_simple_typess(type_ : AST_TypeAnnotation) -> Option<Self> {
+
+        match type_ {
+            AST_TypeAnnotation::I32 => Some(QBE_TYPES::W),
+            AST_TypeAnnotation::I64 => Some(QBE_TYPES::L),
+            AST_TypeAnnotation::U32 => Some(QBE_TYPES::W),
+            AST_TypeAnnotation::U64 => Some(QBE_TYPES::L),
+            AST_TypeAnnotation::F32 => Some(QBE_TYPES::S),
+            AST_TypeAnnotation::F64 => Some(QBE_TYPES::L),
+            AST_TypeAnnotation::CHAR=> Some(QBE_TYPES::B),
+            AST_TypeAnnotation::STRING => Some(QBE_TYPES::L),
+            AST_TypeAnnotation::VOID => Some(QBE_TYPES::V),
+            _ => return None,
+        }
+        
+    }
+
+    pub fn write(&self ) -> String {
+        match self {
+            QBE_TYPES::V => String::new(),
+            QBE_TYPES::B => format!(" b "),
+            QBE_TYPES::W => format!(" w "),
+            QBE_TYPES::L => format!(" l "),
+            QBE_TYPES::S => format!(" s "),
+            QBE_TYPES::D => format!(" d "),
+            QBE_TYPES::H => format!(" h "),
+            QBE_TYPES::A(val) => format!(" {} " , val),
         }
     }
 }
 
+impl  TYPE_Handler{
 
-pub fn get_name_of_identifier(name : AST_Expression) -> String {
-    if let AST_Expression::Identifier(iname) = name {
-        return iname;
+    pub fn get_types(&self , typ : AST_TypeAnnotation) -> QBE_TYPES {
+
+        if let Some(type_) = QBE_TYPES::get_simple_typess(typ.clone()) {
+            return type_;
+        }else if let AST_TypeAnnotation::CUSTOM(name) = typ {
+
+            if self.lookup_name_exists(name.clone()) {
+                return QBE_TYPES::A(format!(":{}",name));
+            }else{
+                panic!("The type is nor simple not aggregate");
+            }
+        }else{
+            panic!("The type is nor simple nor aggregate");
+        }  
+
     }
 
-    String::new()
+    
+    pub fn get_types_size(&self , typ : AST_TypeAnnotation) -> String {
+
+        if let Some(type_) = QBE_TYPES::get_simple_typess(typ.clone()) {
+            match type_ {
+                QBE_TYPES::B => format!("b"),
+                QBE_TYPES::W => format!("w"),
+                QBE_TYPES::L => format!("l"),
+                QBE_TYPES::S => format!("s"),
+                QBE_TYPES::D => format!("d"),
+                QBE_TYPES::H => format!("h"),
+                _ => panic!("should not happen anyway"),
+            }
+        }else if let AST_TypeAnnotation::CUSTOM(name) = typ {
+
+            if self.lookup_name_exists(name.clone()) {
+                todo!("handle custom type size ");
+            }else{
+                panic!("The type is nor simple not aggregate");
+            }
+        }else{
+            panic!("The type is nor simple nor aggregate");
+        }  
+
+    }
+ 
+
+
 }
 
+impl STATEMENT {
 
+
+
+}

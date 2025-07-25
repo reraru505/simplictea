@@ -44,6 +44,7 @@ pub enum AST_Expression {
     CharacterLiteral(char),
 
     Identifier(String),
+    Operator(AST_Operator),
 
     BinaryExpression{
         operator : AST_Operator ,
@@ -122,6 +123,7 @@ pub enum AST_Node{
     statement(AST_Statement),
     expression(AST_Expression),
     error(String),
+    END,
 }
 
 

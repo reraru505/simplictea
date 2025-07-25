@@ -205,6 +205,7 @@ impl Parser {
     }
 
     pub fn is_assignment_marker(&mut self) -> bool {
+        
         let current_token = self.tokens[self.current].clone();
 
         if matches!(current_token , 

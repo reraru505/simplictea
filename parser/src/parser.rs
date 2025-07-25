@@ -29,13 +29,13 @@ impl Parser {
                 );
             }
 
-            if let Some(fn_dec) = self.Function_Declaration_Parser(){
+            else if let Some(fn_dec) = self.Function_Declaration_Parser(){
                 ast.push(
                     AST_Node::statement(fn_dec)
                 );
             }
 
-            if let Some(var_assign) = self.Assignment_Parser(){
+            else if let Some(var_assign) = self.Assignment_Parser(){
                 println!("Assignment parser called");
 
                 ast.push(
@@ -43,32 +43,39 @@ impl Parser {
                 );
             }
 
-            if let Some(conditional ) = self.Conditional_Parser(){
+            else if let Some(conditional ) = self.Conditional_Parser(){
                 ast.push(
                     AST_Node::statement(conditional)
                 );
             }
 
-            if let Some(ret) = self.Return_Statement_Parser(){
+            else if let Some(ret) = self.Return_Statement_Parser(){
                 ast.push(
                     AST_Node::statement(ret)
                 );
             }
 
-            if let Some(itera) = self.Iterator_Parser(){
+            else if let Some(itera) = self.Iterator_Parser(){
                 ast.push(
                     AST_Node::statement(itera)
                 );
             }
 
-            if let Some(structure) = self.Struct_Parser(){
+            else if let Some(structure) = self.Struct_Parser(){
                 
                 println!("Structure parser called");
                 
                 ast.push(
                     AST_Node::statement(structure)
                 );
+            }else{
+                println!("\n\n\nParseed unconditionally , check for token {:#?}\n\n\n" , self.current_token());
+                if !self.consume(){
+                    panic!("some statement is unknown");
+                }
+
             }
+            
  
         }
 

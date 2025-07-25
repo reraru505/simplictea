@@ -54,7 +54,7 @@ impl Parser {
         }
     }
 
-    pub fn Identifier_Parser_old(&mut self) -> Option<AST_Expression> {
+    pub fn Identifier_Parser(&mut self) -> Option<AST_Expression> {
         let current_token = self.tokens[self.current].clone();
         match current_token {
             Token::t_identifier(value) => {
@@ -78,7 +78,7 @@ impl Parser {
             _ => None,
         }
     }
-    pub fn Identifier_Parser(&mut self) -> Option<AST_Expression> {
+    pub fn Identifier_Parser_old(&mut self) -> Option<AST_Expression> {
         let current_token = self.tokens[self.current].clone();
         match current_token {
             Token::t_identifier(value) => {
@@ -106,9 +106,9 @@ impl Parser {
 
     pub fn lhs_parser(&mut self) -> Option<AST_Expression> {
         // Try to parse object items first
-        if let Some(obj_item) = self.object_item_parser() {
-            return Some(obj_item);
-        }
+       // if let Some(obj_item) = self.object_item_parser() {
+        //    return Some(obj_item);
+        //}
 
         // Then try simple identifiers
         if let Some(iden) = self.Declaration_Identifier_Parser() {
@@ -137,10 +137,12 @@ impl Parser {
             }
 
             if self.is_comma_seperator(){
-                retval.push(arg);
+                retval.push(arg.clone());
             }
             
             if self.is_param_end(){
+                retval.push(arg);
+
                 return Some(retval);
             }
 
@@ -149,6 +151,8 @@ impl Parser {
     }
 
     pub fn Function_Call_Parser(&mut self) -> Option<AST_Expression> {
+
+        //panic!("Function call parser calledl");
 
         let checkpoint = self.current;
 
@@ -174,8 +178,8 @@ impl Parser {
 
     pub fn value_parser_old(&mut self) -> Option<AST_Expression> {
         self.Literal_Parser()
-            .or_else(|| self.Identifier_Parser()
-                .or_else(|| self.Function_Call_Parser()
+            .or_else(|| self.Function_Call_Parser()
+                .or_else(|| self.Identifier_Parser()
                     .or_else(|| self.object_item_parser())))
     }
 
@@ -188,8 +192,8 @@ impl Parser {
 
         // Then try other value types
         self.Literal_Parser()
-            .or_else(|| self.Identifier_Parser())
             .or_else(|| self.Function_Call_Parser())
+            .or_else(|| self.Identifier_Parser())
     }
 
     pub fn Primary_Parser(&mut self) -> Option<AST_Expression>{
