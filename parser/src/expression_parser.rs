@@ -174,7 +174,7 @@ impl Parser {
             return self.vomit_and_die(checkpoint);
         }
     }
- 
+
 
     pub fn value_parser_old(&mut self) -> Option<AST_Expression> {
         self.Literal_Parser()

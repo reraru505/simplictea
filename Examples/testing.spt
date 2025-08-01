@@ -1,3 +1,4 @@
+// this is a comment 
 
 printf : i32 fn (a : string ) {
      return 0 ;
@@ -6,7 +7,12 @@ printf : i32 fn (a : string ) {
 
 main : i32 fn  () {
 
-    let : i32 = printf( "hello world" );
+    if a < b {
 
+    }
+
+    if b == c {
+
+    }
     return 0;
 }

@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+silexer = {path = "./silexer/"}
+siparser = {path = "./siparser/"}
 lexer = {path = "./lexer"}
 lex_validator = {path = "./lex_validator"}
 parser = {path = "./parser"}
