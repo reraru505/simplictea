@@ -19,8 +19,8 @@ a2 : i32 = 5;
 // char   : 8 bit character
 // string : array of characters
 // bool   : true of false
-// void   : datatype with no known type
-
+// stack  : stack that can hold arbitary values
+// pointer : holds the address of an identifier
 
 // these are the examples of variable definition with these types
 
@@ -30,6 +30,26 @@ three : f32    = 5454.6;
 four  : f64    = 545345.76576;
 five  : char   = 'c';
 six   : string = "hello";
+
+// this is the declaration of pointer and refrence and dereference 
+
+seven : ptr = ref one;
+eight : i32 = dref seven;
+
+// this is how to declare a structure 
+
+struct foo {
+    a : i32 , 
+    b : i32 ,
+}
+
+// these are the examples of compound variable declaration with initializers 
+
+one : stack = {1 , 2 , 3 , "hello" , 'c'}; 
+
+// this is the initialization of struct value 
+two : foo = {20 , 30};
+
 
 // this is an example of function definition
 
@@ -45,12 +65,6 @@ add : i32 fn ( a : i32 , b : i32 ) {
 	
 	return a + b;
 }
-
-
-main fn {
-
-}
-
 
 
 // this is an example of iterator that iterates a value over range

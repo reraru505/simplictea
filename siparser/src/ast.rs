@@ -15,6 +15,14 @@ pub enum Data_Type {
 }
 
 #[derive(Debug, Clone)]
+pub enum PrefixOP{
+    INCREMENT, 
+    DECREMENT,
+    REFERENCE,
+    DREFERENCE,
+}
+
+#[derive(Debug, Clone)]
 pub enum Node {
     // rudimentary 
     IDENTIFER(String),
@@ -27,6 +35,11 @@ pub enum Node {
     BINARY_EXPRESSION{
         operator : Operator,
         left : Box<Node>,
+        right : Box<Node>,
+    },
+
+    PREFIX_EXPRESSION{
+        operator : PrefixOP,
         right : Box<Node>,
     },
 
@@ -45,6 +58,12 @@ pub enum Node {
     STRUCTURE{
         name : String ,
         body : Vec<Node>,
+    },
+
+    // this is ment as the initializer for all 
+    // compound types , inc array , stack , struct
+    COMPOUND_INIT {
+        args : Vec<Node>
     },
 
     VAR_DEC {

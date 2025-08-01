@@ -1,6 +1,6 @@
 use crate::silexer::silex::{Token, Keyword, Special, Operator };
 use crate::siparser::SiParser;
-use crate::ast::{Data_Type , Node};
+use crate::ast::{Data_Type , Node, PrefixOP};
 
 
 impl SiParser {
@@ -17,7 +17,6 @@ impl SiParser {
         }
 
         panic!("Tried to consume eof");
-        return false;
     }
 
     pub fn is_eof (&self ) -> bool {
@@ -174,13 +173,87 @@ impl SiParser {
         return retval;
     }
 
+    pub fn compound_initializer_parser(&mut self ) -> Option<Node> {
+        
+        let checkpoint = self.index;
+        let mut nodevec : Vec<Node> = Vec::new();
+
+        if self.is_scope_start(){
+            loop {
+                let node = if let Some(node) = self.primary_parser(){
+                    node
+                }else {
+                    return self.vomit_and_die(checkpoint);
+                };
+
+                if self.is_comma(){
+                    nodevec.push(node);
+                }else if self.is_scope_end(){
+                    nodevec.push(node);
+                    break
+                }
+                
+            }
+        }
+        
+        return Some(
+            Node::COMPOUND_INIT { args: nodevec }
+        );
+    }
+
+    pub fn is_prefix_operator(&mut self ) -> Option<PrefixOP>{
+
+        match self.current() {
+            Token::KEYWORD(Keyword::REFRENCE) => {
+                self.consume();
+                return Some(PrefixOP::REFERENCE);
+            },
+            Token::KEYWORD(Keyword::DREFRENCE) => {
+                self.consume();
+                return Some(PrefixOP::DREFERENCE);
+            },
+            Token::KEYWORD(Keyword::INCREMENT) => {
+                self.consume();
+                return Some(PrefixOP::INCREMENT);
+            },
+            Token::KEYWORD(Keyword::DECREMENT) => {
+                self.consume();
+                return Some(PrefixOP::DECREMENT);
+            }, 
+            _ => return None,
+        }
+    }
+
+    pub fn prefix_expression_parser(&mut self) -> Option<Node> {
+        
+        let checkpoint = self.index;
+
+        let op = if let Some(op) = self.is_prefix_operator(){
+            op
+        }else{
+           return self.vomit_and_die(checkpoint); 
+        };
+
+        let val = if let Some(id) = self.identifer_parser(){
+            id
+        }else{
+            panic!("Use of prefix identifier operator on non identifer token");
+        };
+
+        return Some(
+            Node::PREFIX_EXPRESSION { operator: op, right: Box::new(val) }
+        );
+    }
+
     pub fn value_parser(&mut self) -> Option<Node> {
         self.function_call_parser()
-            .or_else(|| self.char_parser()
-                .or_else(|| self.string_parser() 
-                    .or_else(|| self.float_parser()
-                        .or_else(|| self.integer_parser()
-                            .or_else(|| self.identifer_parser())))))
+            .or_else(|| self.compound_initializer_parser()
+                .or_else(|| self.char_parser()
+                    .or_else(|| self.string_parser() 
+                        .or_else(|| self.float_parser()
+                            .or_else(|| self.integer_parser()
+                                .or_else(|| self.identifer_parser() 
+                                    .or_else(|| self.prefix_expression_parser())))))))
 
     }
 
@@ -556,7 +629,11 @@ impl SiParser {
                panic!("syntax error");
             }
 
-            let d_type = self.data_type_parser();
+            let d_type = if let Some(d) = self.data_type_parser(){
+                d
+            }else{
+                panic!("syntax error");
+            };
 
             if self.is_comma(){
                 retvec.push(Node::PARAM { name: name, d_type: d_type });
@@ -570,22 +647,46 @@ impl SiParser {
         return retvec;
     }
 
-    pub fn data_type_parser(&mut self ) -> Data_Type {
+    pub fn data_type_parser(&mut self ) -> Option<Data_Type> {
 
         match self.current() {
-            Token::KEYWORD(Keyword::I32) => return Data_Type::I32,
-            Token::KEYWORD(Keyword::F32) => return Data_Type::F32,
+            Token::KEYWORD(Keyword::I32) => {
+                self.consume();
+                return Some(Data_Type::I32);
+            },
+            Token::KEYWORD(Keyword::F32) => {
+                self.consume();
+                return Some(Data_Type::F32);
+            },
             
-            Token::KEYWORD(Keyword::I64) => return Data_Type::I64,
-            Token::KEYWORD(Keyword::F64) => return Data_Type::F64,
+            Token::KEYWORD(Keyword::I64) => { 
+                self.consume(); 
+                return Some(Data_Type::I64);
+            },
+            Token::KEYWORD(Keyword::F64) => { 
+                self.consume(); 
+                return Some(Data_Type::F64);
+            },
             
-            Token::KEYWORD(Keyword::STRING) => return Data_Type::STRING,
-            Token::KEYWORD(Keyword::CHAR) => return Data_Type::CHAR,
+            Token::KEYWORD(Keyword::STRING) => {
+                self.consume();
+                return Some(Data_Type::STRING);
+            },
+            Token::KEYWORD(Keyword::CHAR) => { 
+                self.consume(); 
+                return Some(Data_Type::CHAR);
+            },
             
-            Token::KEYWORD(Keyword::STACK) => return Data_Type::STACK,
-            Token::KEYWORD(Keyword::POINTER) => return Data_Type::POINTER,
+            Token::KEYWORD(Keyword::STACK) => { 
+                self.consume(); 
+                return Some(Data_Type::STACK);
+            },
+            Token::KEYWORD(Keyword::POINTER) => { 
+                self.consume(); 
+                return Some(Data_Type::POINTER);
+            },
 
-            _ => panic!("Not a Data_Type"),
+            _ => panic!("Not a Some(Data_Type"),
         }
 
     }
