@@ -1,18 +1,21 @@
 // this is a comment 
 
+struct happle {
+    a : i32 ,
+    b : i32 
+}
+
 printf : i32 fn (a : string ) {
+     
      return 0 ;
 }
 
-
 main : i32 fn  () {
 
-    if a < b {
+    bapple : happle = {23 , 55 };
 
-    }
+    kapple : stack = {32 , 55};
 
-    if b == c {
-
-    }
+    exp : i32 = 1 + 2 + 3  * 4 + inc bapple.a ; 
     return 0;
 }

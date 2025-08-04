@@ -3,9 +3,15 @@ name = "sip"
 version = "0.1.0"
 edition = "2021"
 
+
+# the ones with the si prefix 
+# are the new additions for now
+# old ones will be discarted 
 [dependencies]
 silexer = {path = "./silexer/"}
 siparser = {path = "./siparser/"}
+sitable = {path = "./sitable/"}
+sibyte = {path = "./sibyte/"}
 lexer = {path = "./lexer"}
 lex_validator = {path = "./lex_validator"}
 parser = {path = "./parser"}

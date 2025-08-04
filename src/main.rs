@@ -19,14 +19,18 @@
 //
 
 extern crate silexer;
+extern crate siparser;
 use crate::silexer::silex::SiLexer;
+use crate::siparser::siparser::SiParser;
 
 
 fn main() {
 
-      let tokens = SiLexer::new("./Examples/testing.spt".to_string()).lex();
+      let tokens = SiLexer::new("./Examples/testing.spt".to_string()).lex_no_pos();
 
       println!("{:#?}", tokens);
+      
+      println!("{:#?}", SiParser::new(tokens).parse());
 
 //    let a_lexemes : Vec<Lexeme> = lexer::lexer("./Examples/testing.spt".to_string());
 //

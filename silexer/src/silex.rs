@@ -65,12 +65,15 @@ pub enum Keyword{
     ELSE,
     FOR,
     STRUCT,
+    RETURN,
    
     // these are the prefix operators 
     REFRENCE,
     DREFRENCE,
     INCREMENT,
     DECREMENT,
+
+    BREAK,
 }
 
 #[derive(Debug, Clone)]
@@ -458,6 +461,8 @@ impl SiLexer{
             "dref"  => return Some(Token::KEYWORD(Keyword::DREFRENCE)),
             "inc" => return Some(Token::KEYWORD(Keyword::INCREMENT)),
             "dec" => return Some(Token::KEYWORD(Keyword::DECREMENT)),
+            "return" => return Some(Token::KEYWORD(Keyword::RETURN)),
+            "break" => return Some(Token::KEYWORD(Keyword::BREAK)),
 
             _ => return None,
         }

@@ -83,8 +83,50 @@ impl SiParser {
             return true;
         }
         false
-    }  
+    }
 
+    pub fn is_assignmet_operator(&mut self) -> bool {
+        if matches!(self.current() , Token::OPERATOR(Operator::EQ)){
+            self.consume();
+            return true;
+        }
+        false
+    }
+
+    pub fn is_if_statement(&mut self ) -> bool {
+        if matches!(self.current() , Token::KEYWORD(Keyword::IF)){
+            self.consume();
+            return true;
+        }
+        false
+    }
+
+    pub fn is_elif_statement(&mut self ) -> bool {
+        if matches!(self.current() , Token::KEYWORD(Keyword::ELIF)){
+            self.consume();
+            return true;
+        }
+        false
+    }
+ 
+    
+    pub fn is_else_statement(&mut self ) -> bool {
+        if matches!(self.current() , Token::KEYWORD(Keyword::ELSE)){
+            self.consume();
+            return true;
+        }
+        false
+    }
+
+    pub fn is_for_statement(&mut self) -> bool {
+        if matches!(self.current() , Token::KEYWORD(Keyword::FOR)){
+            self.consume();
+            return true;
+        }
+        false
+    }
+ 
+    
     pub fn identifer_parser(&mut self) -> Option<Node> {
        if let Token::IDENTIFIER(val) = self.current() {
            self.consume();
@@ -129,7 +171,8 @@ impl SiParser {
            return Some(Node::CHAR(val));
        }
        None
-    } 
+    }
+
 
     pub fn function_call_parser(&mut self ) -> Option<Node> {
 
@@ -194,6 +237,8 @@ impl SiParser {
                 }
                 
             }
+        }else{
+            return None;
         }
         
         return Some(
@@ -234,7 +279,9 @@ impl SiParser {
            return self.vomit_and_die(checkpoint); 
         };
 
-        let val = if let Some(id) = self.identifer_parser(){
+        let val = if let Some(item) = self.item_parser(){
+            item
+        }else if let Some(id) = self.identifer_parser(){
             id
         }else{
             panic!("Use of prefix identifier operator on non identifer token");
@@ -245,15 +292,43 @@ impl SiParser {
         );
     }
 
+    pub fn item_parser(&mut self) -> Option<Node> {
+        let checkpoint = self.index;
+
+        let mut itemvec : Vec<String> = Vec::new();
+
+        if let Some(val) = self.identifer_name_parser(){
+            if !self.is_dot(){
+                return self.vomit_and_die(checkpoint);
+            }else{
+                itemvec.push(val);
+                loop {
+                  if let Some(id) = self.identifer_name_parser(){
+                      itemvec.push(id);
+                  }
+
+                  if !self.is_dot(){
+                     break;
+                  }
+                }
+                return Some(Node::ITEM(itemvec));
+            }
+
+        }
+        None
+    }
+
     pub fn value_parser(&mut self) -> Option<Node> {
         self.function_call_parser()
-            .or_else(|| self.compound_initializer_parser()
-                .or_else(|| self.char_parser()
-                    .or_else(|| self.string_parser() 
-                        .or_else(|| self.float_parser()
-                            .or_else(|| self.integer_parser()
-                                .or_else(|| self.identifer_parser() 
-                                    .or_else(|| self.prefix_expression_parser())))))))
+            .or_else(|| self.item_parser()
+                .or_else(|| self.prefix_expression_parser()
+                    .or_else(|| self.compound_initializer_parser()
+                        .or_else(|| self.char_parser()
+                            .or_else(|| self.string_parser() 
+                                .or_else(|| self.float_parser()
+                                    .or_else(|| self.integer_parser()
+                                        .or_else(|| self.identifer_parser() 
+                                        ))))))))
 
     }
 
@@ -338,7 +413,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.multiplicative_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -355,7 +430,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.multiplicative_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -388,7 +463,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.additive_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -405,7 +480,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.additive_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -439,7 +514,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.relational_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -456,7 +531,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.relational_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -489,7 +564,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.equality_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -522,7 +597,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.bitwise_and_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -554,7 +629,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.bitwise_or_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -586,7 +661,7 @@ impl SiParser {
                     return self.vomit_and_die(checkpoint);
                 }
 
-                let right = if let Some(val) = self.primary_parser(){
+                let right = if let Some(val) = self.logical_and_parser(){
                     val
                 }else{
                     return self.vomit_and_die(checkpoint);
@@ -607,7 +682,6 @@ impl SiParser {
 
     pub fn binary_expression_parser(&mut self ) -> Option<Node> {
         self.logical_or_parser()
-            .or_else(|| self.primary_parser())
     }
 
     pub fn function_param_parser(&mut self ) -> Vec<Node> {
@@ -647,6 +721,44 @@ impl SiParser {
         return retvec;
     }
 
+    pub fn struct_body_parser(&mut self ) -> Vec<Node> {
+
+        let mut retvec : Vec<Node> = Vec::new();
+
+        if self.is_scope_end(){
+            return retvec;
+        }
+
+        loop {
+            let name = if let Some(id) = self.identifer_name_parser(){
+                id
+            }else{
+                panic!("syntax error : not an identifer");
+            };
+
+            if !self.is_colon(){
+               panic!("syntax error");
+            }
+
+            let d_type = if let Some(d) = self.data_type_parser(){
+                d
+            }else{
+                panic!("syntax error");
+            };
+
+            if self.is_comma(){
+                retvec.push(Node::PARAM { name: name, d_type: d_type });
+            }else if self.is_scope_end(){
+                retvec.push(Node::PARAM { name: name, d_type: d_type });
+                break;
+            }
+            
+        } // loop end
+
+        return retvec;
+    }
+ 
+
     pub fn data_type_parser(&mut self ) -> Option<Data_Type> {
 
         match self.current() {
@@ -684,6 +796,10 @@ impl SiParser {
             Token::KEYWORD(Keyword::POINTER) => { 
                 self.consume(); 
                 return Some(Data_Type::POINTER);
+            },
+            Token::IDENTIFIER(name) =>{
+                self.consume();
+                return Some(Data_Type::CUSTOM(name));
             },
 
             _ => panic!("Not a Some(Data_Type"),

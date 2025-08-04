@@ -12,6 +12,7 @@ pub enum Data_Type {
     CHAR,
     STACK,
     POINTER,
+    CUSTOM(String),
 }
 
 #[derive(Debug, Clone)]
@@ -42,7 +43,7 @@ pub enum Node {
         operator : PrefixOP,
         right : Box<Node>,
     },
-
+    // exported
     FUNCTION_DEC{
         name : String ,
         r_type : Data_Type,
@@ -55,6 +56,11 @@ pub enum Node {
         d_type : Data_Type,
     },
 
+    RETURN {
+       val : Option<Box<Node>>
+    },
+
+    // exported
     STRUCTURE{
         name : String ,
         body : Vec<Node>,
@@ -66,31 +72,42 @@ pub enum Node {
         args : Vec<Node>
     },
 
+    // exported
     VAR_DEC {
         name : String,
         d_type : Data_Type,
         initializer : Option<Box<Node>>,
     },
 
+    // exported
     FUNCTION_CALL {
         name : String ,
         args : Vec<Node>,
     },
 
     CONDITIONAL {
-        condition : Box<Node>,
+        condition : Option<Box<Node>>,
         body : Vec<Node>,
-        next : Option<Box<Node>>,
     },
 
+    // exported
+    CONDTIONAL_CHAIN (Vec<Node>),
+
+    // exported
     ITERATOR {
         condition : Option<Box<Node>>,
         body : Vec<Node>,
     },
 
+    // exported
     ASSIGNMENT {
         lhs : Box<Node>,
         rhs : Box<Node>,
     },
+
+    ITEM(Vec<String>),
+
+    BREAK,
+    NOP,
 
 }
